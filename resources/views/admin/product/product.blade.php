@@ -70,8 +70,8 @@
 
                 <table class="table table-condensed table-bordered
                         table-hover datatable" id="products-table">
-                    <thead style="font-size: 16px">
-                        <tr style="font-size: 18px">
+                    <thead>
+                        <tr>
                             <th class="align-middle">Id</th>
                             <th class="align-middle">Név</th>
                             <th class="align-middle">Főkategória</th>
@@ -159,7 +159,7 @@
                             <option selected disabled>Kérem válasszon kategóriát</option>
                             @foreach($mainCategories as $mainCategory)
                                 <option value="{{$mainCategory->id}}">{{$mainCategory->name}}</option>
-                                @foreach($mainCategory->sub_category as $sub)
+                                @foreach($mainCategory->sub_categories as $sub)
                                     <option value="{{$sub->id}}">-{{$sub->name}}</option>
                                 @endforeach
                             @endforeach

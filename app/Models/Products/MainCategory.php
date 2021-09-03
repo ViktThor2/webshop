@@ -21,7 +21,14 @@ class MainCategory extends Model
       return $this->hasMany(Product::class);
     }
 
-    public function sub_category(){
+    public function sub_categories(){
       return $this->hasMany(SubCategory::class);
+    }
+
+    public function getColumns()
+    {
+      foreach($this->sub_categories as $sub):
+        $this->subCategory = $sub->name;
+      endforeach;
     }
 }

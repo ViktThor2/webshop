@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\Product;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products\{
     Product, ProductTable, MainCategory, SubCategory, Brand, AmountUnit, Vat
 };
-
 
 class ProductController extends Controller
 {
@@ -35,7 +34,7 @@ class ProductController extends Controller
         $units = AmountUnit::all();
         $vats = Vat::all();
 
-        return view('admin.product.index')
+        return view('admin.product.product')
             ->with('mainCategories', $mainCategories)
             ->with('subCategories', $subCategories)
             ->with('brands', $brands)
