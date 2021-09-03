@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\Admin\Product\{AdminController, ProductController, CategoryController};
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\Product\{ProductController, CategoryController};
 
 Auth::routes();
 
