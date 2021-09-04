@@ -75,7 +75,7 @@ class ProductController extends Controller
 
     public function destroy($id)
     {
-        $product = Product::destroy($id);
+        Product::destroy($id);
 
         return response()->json(['success' => 'Termék törölve']);
     }

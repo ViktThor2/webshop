@@ -23,4 +23,6 @@ class CategoryTable
         
         return $categories;
     }
+
+
 }

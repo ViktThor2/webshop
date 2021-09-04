@@ -20,4 +20,13 @@ class Brand extends Model
     public function products(){
       return $this->hasMany(Product::class);
     }
+
+    public function getEditForm()
+    {
+        return '<div class="form-floating mb-2">
+                    <input type="text" class="form-control" name="name" id="editName"
+                             value="'.$this->name.'" required>
+                    <label for="editName">Név</label>
+                </div>';
+    }
 }

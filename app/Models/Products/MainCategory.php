@@ -25,10 +25,19 @@ class MainCategory extends Model
       return $this->hasMany(SubCategory::class);
     }
 
-    public function getColumns()
+    public function getEditForm()
+    {
+        return '<div class="form-floating mb-2">
+                    <input type="text" class="form-control" name="name" id="editMainName"
+                             value="'.$this->name.'" required>
+                    <label for="editMainName">Név</label>
+                </div>';
+    }
+
+    public function deleteSub()
     {
       foreach($this->sub_categories as $sub):
-        $this->subCategory = $sub->name;
+        $sub->delete();
       endforeach;
     }
 }

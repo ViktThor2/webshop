@@ -1,0 +1,268 @@
+@extends('admin.layouts.admin')
+
+@section('content')
+
+    {{-- Index --}}
+    <div class="col-md-12">
+        <div class="card mt-2">
+            <div class="card-header">
+                Márkák
+                <button id="new_button" class="btn btn-success" type="button"  
+                        data-toggle="modal" data-target="#BrandModal">
+                    <i class="fas fa-plus fa-sm"></i>Új
+                </button>
+            </div>
+            <div class="card-body">
+
+                <table class="table table-condensed table-bordered
+                        table-hover datatable" id="brands-table">
+                    <thead>
+                        <tr>
+                            <th class="align-middle">Név</th>
+                            <th width="100px"></th>
+                        </tr>
+                    </thead>
+                </table>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Create  Modal -->
+    <div class="modal" id="BrandModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Márka létrehozása</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="BrandModalBody">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                        <strong>Siker! </strong>Márka létrehozva.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-2">
+                        <input type="text" class="form-control" name="name" id="name" placeholder="Név" required>
+                        <label for="name">Név</label>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Bezár</button>
+                    <button type="button" class="btn btn-success" id="SubmitCreateBrandForm">Mentés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit  Modal -->
+    <div class="modal" id="EditBrandModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Márka szerkesztése</h4>
+                    <button type="button" class="close modelClose" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body" id="EditBrandModalBody">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                        <strong>Siker!</strong>Márka frissítve.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger modelClose" data-dismiss="modal">Bezár</button>
+                    <button type="button" class="btn btn-success" id="SubmitEditBrandForm">Mentés</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Delete  Modal -->
+    <div class="modal" id="DeleteBrandModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Márka törlése</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h4>Biztos, hogy törölni szeretnéd a terméket?</h4>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Nem</button>
+                    <button type="button" class="btn btn-success" id="SubmitDeleteBrandForm">Igen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+@endsection
+
+@section('script')
+
+    <script type="text/javascript">
+        $(document).ready(function() 
+        {
+            // init datatable.
+            $('.datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                pageLength: 10,
+                "order": [[ 0, "desc" ]],
+                ajax: {
+                    url: '{{ route('brand.index') }}'
+                },
+                columns: [
+                    {data: 'name', name: 'name'},
+                    {
+                        data: 'Actions', name: 'Actions',
+                        orderable:false, serachable:false,sClass:'text-center'
+                    },
+                ],
+            });
+
+            // Create article Ajax request.
+            $('#SubmitCreateBrandForm').click(function(e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "{{ route('brand.store') }}",
+                    method: 'post',
+                    data: {
+                        name: $('#name').val(),
+                    },
+                    success: function(result) {
+                        if(result.errors) {
+                            $('.alert-danger').html('');
+                            $.each(result.errors, function(key, value) {
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+                            });
+                        } else {
+                            $('.alert-danger').hide();
+                            $('.alert-success').show();
+                            $('.datatable').DataTable().ajax.reload();
+                            setInterval(function(){
+                                $('.alert-success').hide();
+                                $('#CreateBrandModal').modal('hide');
+                                location.reload();
+                            }, 2000);
+                        }
+                    }
+                });
+            });
+
+            // Get single article in EditModel
+            $('.modelClose').on('click', function(){
+                $('#EditBrandModal').hide();
+            });
+            var id;
+            $('body').on('click', '#getEditBrandData', function(e) {
+                // e.preventDefault();
+                $('.alert-danger').html('');
+                $('.alert-danger').hide();
+                    id = $(this).data('id');
+                $.ajax({
+                    url: "brand/"+id+"/edit",
+                    method: 'GET',
+                    success: function(result) {
+                        console.log(result);
+                        $('#EditBrandModalBody').html(result.html);
+                        $('#EditBrandModal').show();
+                    }
+                });
+            });
+        
+            // Update  Ajax request.
+            $('#SubmitEditBrandForm').click(function(e) {
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "brand/"+id,
+                    method: 'PUT',
+                    data: {
+                        name: $('#editName').val(),
+                    },
+                    success: function(result) {
+                        if(result.errors) {
+                            $('.alert-danger').html('');
+                            $.each(result.errors, function(key, value) {
+                                $('.alert-danger').show();
+                                $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
+                            });
+                        } else {
+                            $('.alert-danger').hide();
+                            $('.alert-success').show();
+                            location.reload();
+                            setInterval(function(){
+                                $('.alert-success').hide();
+                                $('#EditBrandModal').hide();
+                            }, 2000);
+                        }
+                    }
+                });
+            });
+
+
+            // Delete  request.
+            var deleteID;
+            $('body').on('click', '#getDeleteId', function(){
+                deleteID = $(this).data('id');
+            })
+            $('#SubmitDeleteBrandForm').click(function(e) {
+                e.preventDefault();
+                var id = deleteID;
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    url: "brand/"+id,
+                    method: 'DELETE',
+                    success: function(result) {
+                        setInterval(function(){
+                            location.reload();
+                            $('#DeleteBrandModal').hide();
+                        }, 1000);
+                    }
+                });
+            });
+
+
+        }); 
+    </script>
+@endsection

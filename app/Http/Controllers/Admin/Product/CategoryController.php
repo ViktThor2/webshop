@@ -17,15 +17,90 @@ class CategoryController extends Controller
             $categories = $categoryTable->getColumns();
             
             return \DataTables::of($categories)
-            ->addColumn('Actions', function($categories) {
-                return '<button type="button" class="btn btn-link btn-sm" id="getEditCategoryData" data-id="'.$categories->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                    <button type="button" data-id="'.$categories->id.'" data-toggle="modal" data-target="#DeleteCategoryModal" class="btn btn-link btn-sm" id="getDeleteId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
-            })
+                ->addColumn('Actions', function($categories) {
+                    if($categories->sub == '-'):
+                        return '<button type="button" class="btn btn-link btn-sm" id="getEditMainCategoryData" data-id="'.$categories->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                         <button type="button" data-id="'.$categories->id.'" data-toggle="modal" data-target="#DeleteMainCategoryModal" class="btn btn-link btn-sm" id="getDeleteMainId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
+                    else:
+                        return '<button type="button" class="btn btn-link btn-sm" id="getEditSubCategoryData" data-id="'.$categories->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                         <button type="button" data-id="'.$categories->id.'" data-toggle="modal" data-target="#DeleteSubCategoryModal" class="btn btn-link btn-sm" id="getDeleteSubId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
+                    endif;
+                })
             ->rawColumns(['Actions'])
             ->make(true);
-        endif;    
+        endif;
 
-        return view('admin.product.category');
+        $mainCategories = MainCategory::all();
+
+        return view('admin.product.category')
+            ->with('mainCategories', $mainCategories);
     }
+
+    public function store(Request $request)
+    {
+        if(!$request->main_category_id):
+            $mainCategory = new MainCategory();
+            $mainCategory->setData($request);
+            $mainCategory->save();
+
+            return response()->json(['success' => 'Főkategória létrhozva']);
+        else:
+            $subCategory = new SubCategory();
+            $subCategory->setData($request);
+            $subCategory->save();
+
+            return response()->json(['success' => 'Alkategória létrhozva']);
+        endif;
+    }
+
+    public function edit($id)
+    {
+        $category = MainCategory::find($id);
+        $html = $category->getEditForm();
+
+        return response()->json(['html' => $html]);            
+    }
+
+    public function editsub($id)
+    {
+        $category = SubCategory::find($id);
+        $html = $category->getEditForm();
+
+        return response()->json(['html' => $html]);            
+    }
+
+    public function update($id, Request $request)
+    {
+        if(!$request->main_category_id):
+            $mainCategory = MainCategory::find($id);
+            $mainCategory->setData($request);
+            $mainCategory->update();
+
+            return response()->json(['success' => 'Főkategória frissítve']);
+        else:
+            $subCategory = SubCategory::find($id);
+            $subCategory->setData($request);
+            $subCategory->update();
+
+            return response()->json(['success' => 'Alkategória frissítve']);
+        endif;
+    }
+
+    public function destroy($id)
+    {
+        $mainCategory = MainCategory::find($id);
+        $mainCategory->deleteSub();
+        $mainCategory->delete();
+
+        return response()->json(['success' => 'Főkategória törölve']);
+    }
+
+    public function destroysub($id)
+    {
+        SubCategory::destroy($id);
+
+        return response()->json(['success' => 'Alkategória törölve']);
+    }
+
 }
 

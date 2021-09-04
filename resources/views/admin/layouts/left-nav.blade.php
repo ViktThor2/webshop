@@ -38,13 +38,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('brand.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Márkák</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('unit.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Mennyiségi egységek</p>
                 </a>
