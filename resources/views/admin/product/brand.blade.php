@@ -109,7 +109,7 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <h4>Biztos, hogy törölni szeretnéd a terméket?</h4>
+                    <h4>Biztos, hogy törölni szeretnéd a márkát?</h4>
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">

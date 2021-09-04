@@ -45,6 +45,20 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+            'netto' => 'required| num',
+            'vat_sum' => 'required| num',
+            'vat_id' => 'required',
+            'brutto' => 'required| num',
+            'qty' => 'required| num',
+            'main_category_id' => 'required',
+            'sub_category_id' => 'required',
+            'brand_id' => 'required',
+            'amount_unit_id' => 'required',
+            'description' => 'required',
+            'active' => 'required',
+        ]);
         $product = new Product();
         $product->setData($request);
         $subCategory = SubCategory::find($request->sub_category_id);

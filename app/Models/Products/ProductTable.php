@@ -142,5 +142,4 @@ class ProductTable extends Product
                     <label for="editDescription">Leírás...</label>
                 </div>';        
     }
-    
 }

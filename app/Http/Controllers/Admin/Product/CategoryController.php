@@ -39,12 +39,19 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         if(!$request->main_category_id):
+            $this->validate($request, [
+                'name' => 'required',
+             ]);
             $mainCategory = new MainCategory();
             $mainCategory->setData($request);
             $mainCategory->save();
 
             return response()->json(['success' => 'Főkategória létrhozva']);
         else:
+            $this->validate($request, [
+                'name' => 'required',
+                'main_category_id' => 'required'
+             ]);
             $subCategory = new SubCategory();
             $subCategory->setData($request);
             $subCategory->save();
@@ -72,6 +79,9 @@ class CategoryController extends Controller
     public function update($id, Request $request)
     {
         if(!$request->main_category_id):
+            $this->validate($request, [
+                'name' => 'required',
+             ]);
             $mainCategory = MainCategory::find($id);
             $mainCategory->setData($request);
             $mainCategory->update();
@@ -79,6 +89,10 @@ class CategoryController extends Controller
             return response()->json(['success' => 'Főkategória frissítve']);
         else:
             $subCategory = SubCategory::find($id);
+            $this->validate($request, [
+                'name' => 'required',
+                'main_category_id' => 'required'
+             ]);
             $subCategory->setData($request);
             $subCategory->update();
 
@@ -89,6 +103,9 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $mainCategory = MainCategory::find($id);
+        if($mainCategory->products):
+            return response()->json([['error' => 'Nem törölhető olyan kategória, amihez tartozik termék']]);
+        endif;
         $mainCategory->deleteSub();
         $mainCategory->delete();
 
@@ -97,8 +114,13 @@ class CategoryController extends Controller
 
     public function destroysub($id)
     {
-        SubCategory::destroy($id);
+        $subCategory = SubCategory::find($id);
+        if($subCategory->products):
+            return response()->json([['error' => 'Nem törölhető olyan kategória, amihez tartozik termék']]);
+        endif;
+        $subCategory->delete();
 
+            
         return response()->json(['success' => 'Alkategória törölve']);
     }
 

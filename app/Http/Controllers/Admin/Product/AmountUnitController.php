@@ -39,6 +39,10 @@ class AmountUnitController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name' => 'required',
+         ]);
+
         $unit = new AmountUnit();
         $unit->setData($request);
         $unit->save();
@@ -70,6 +74,10 @@ class AmountUnitController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'name' => 'required',
+         ]);
+         
         $unit = AmountUnit::find($id);
         $unit->setData($request);
         $unit->update();
@@ -85,8 +93,12 @@ class AmountUnitController extends Controller
      */
     public function destroy($id)
     {
-        AmountUnit::destroy($id);
-
+        $unit = AmountUnit::find($id);
+        if($unit->products):
+            return response()->json(['error' => 'Nem törölhető olyan mennyiségi egység, amihez termék kapcsolódik']);
+        endif;
+        $unit->delete();
+        
         return response()->json(['success' => 'Mennyiségi egység törölve']);
     }
 }

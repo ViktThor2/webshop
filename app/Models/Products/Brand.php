@@ -29,4 +29,5 @@ class Brand extends Model
                     <label for="editName">Név</label>
                 </div>';
     }
+    
 }
