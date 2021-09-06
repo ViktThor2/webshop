@@ -1,6 +1,5 @@
 $(document).ready(function()
 {
-
     // init datatable.
     var table = $('.datatable').DataTable({
         processing: true,
