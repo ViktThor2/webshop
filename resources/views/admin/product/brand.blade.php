@@ -38,16 +38,8 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body" id="BrandModalBody">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
                         <strong>Siker! </strong>Márka létrehozva.
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                     </div>
                     <div class="form-floating mb-2">
                         <input type="text" class="form-control" name="name" id="name" placeholder="Név" required>
@@ -73,13 +65,8 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body" id="EditBrandModalBody">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none;">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
                     <div class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
-                        <strong>Siker!</strong>Márka frissítve.
+                        <strong>Siker! </strong>Márka frissítve.
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -87,7 +74,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger modelClose" data-dismiss="modal">Bezár</button>
+                    <button type="button" class="btn btn-danger modelClose" id="CloseEditModal">Bezár</button>
                     <button type="button" class="btn btn-success" id="SubmitEditBrandForm">Mentés</button>
                 </div>
             </div>
@@ -105,6 +92,9 @@
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
+                    <div id="suc" class="alert alert-success alert-dismissible fade show" role="alert" style="display: none;">
+                        <strong>Siker! </strong>Márka törölve.
+                    </div>
                     <h4>Biztos, hogy törölni szeretnéd a márkát?</h4>
                 </div>
                 <!-- Modal footer -->
@@ -121,8 +111,9 @@
 @section('script')
 
     <script type="text/javascript">
-        $(document).ready(function() 
+        $(document).ready(function()
         {
+
             // init datatable.
             var table = $('.datatable').DataTable({
                 processing: true,
@@ -196,7 +187,7 @@
             });
             var id;
             $('body').on('click', '#getEditBrandData', function(e) {
-                // e.preventDefault();
+                 e.preventDefault();
                 $('.alert-danger').html('');
                 $('.alert-danger').hide();
                     id = $(this).data('id');
@@ -210,7 +201,7 @@
                     }
                 });
             });
-        
+    
             // Update  Ajax request.
             $('#SubmitEditBrandForm').click(function(e) {
                 e.preventDefault();
@@ -226,25 +217,30 @@
                         name: $('#editName').val(),
                     },
                     success: function(result) {
-                        if(result.errors) {
-                            $('.alert-danger').html('');
-                            $.each(result.errors, function(key, value) {
-                                $('.alert-danger').show();
-                                $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
-                            });
-                        } else {
                             $('.alert-danger').hide();
                             $('.alert-success').show();
-                            location.reload();
-                            setInterval(function(){
+                            $('.datatable').DataTable().ajax.reload();
+                            setTimeout( function() {
                                 $('.alert-success').hide();
                                 $('#EditBrandModal').hide();
+                                $(".modal-body input").val("")
                             }, 2000);
+                    },  
+                    error: function (err) {
+                        if (err.status == 422) { // when status code is 422, it's a validation issue
+                            console.log(err.responseJSON);
+                            $('#success_message').fadeIn().html(err.responseJSON.message);
+                            // you can loop through the errors object and show it to the user
+                            console.warn(err.responseJSON.errors);
+                            // display errors on each form field
+                            $.each(err.responseJSON.errors, function (i, error) {
+                                var el = $(document).find('[name="'+i+'"]');
+                                el.after($('<span style="color: red;">'+error[0]+'</span>'));
+                            });
                         }
                     }
                 });
             });
-
 
             // Delete  request.
             var deleteID;
@@ -263,12 +259,16 @@
                     url: "brand/"+id,
                     method: 'DELETE',
                     success: function(result) {
-                        $('.datatable').DataTable().ajax.reload();
-                        setInterval(function(){
-//                            location.reload();
-                            $('#DeleteBrandModal').hide();
-                        }, 1000);
-                    }
+                            $('.alert-danger').hide();
+                            $('.alert-success').show();
+                            $('.datatable').DataTable().ajax.reload();
+                            setTimeout( function() {
+                                $('.alert-success').hide();
+                                $('#DeleteBrandModal').hide();
+                                $('.modal-backdrop').remove();
+                                console.log('teszt');
+                            }, 2000);
+                    },  
                 });
             });
 
