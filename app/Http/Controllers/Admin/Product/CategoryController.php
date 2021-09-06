@@ -103,8 +103,9 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         $mainCategory = MainCategory::find($id);
-        if($mainCategory->products):
-            return response()->json([['error' => 'Nem törölhető olyan kategória, amihez tartozik termék']]);
+        if( count($mainCategory->products) > 0):
+            return response()->json([['error' =>
+             'Nem törölhető olyan kategória, amihez tartozik termék']]);
         endif;
         $mainCategory->deleteSub();
         $mainCategory->delete();
@@ -115,8 +116,9 @@ class CategoryController extends Controller
     public function destroysub($id)
     {
         $subCategory = SubCategory::find($id);
-        if($subCategory->products):
-            return response()->json([['error' => 'Nem törölhető olyan kategória, amihez tartozik termék']]);
+        if( count($subCategory->products) > 0):
+            return response()->json([['error' => 
+                'Nem törölhető olyan kategória, amihez tartozik termék']]);
         endif;
         $subCategory->delete();
 

@@ -39,9 +39,9 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-         ]);
+         $this->validate($request, [
+            'name' => 'required|string|max:255|unique:brands',
+          ]);
 
         $brand = new Brand();
         $brand->setData($request);
@@ -75,8 +75,8 @@ class BrandController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
-         ]);
+            'name' => 'required|string|max:255',
+          ]);
 
         $brand = Brand::find($id);
         $brand->setData($request);
@@ -93,12 +93,13 @@ class BrandController extends Controller
      */
     public function destroy($id)
     {
-        $brand = Brand::find($id);
-        if($brand->products):
-            return response()->json(['error' => 'Nem törölhető olyan márka, amhiez termék van kapcsolva']);
+        $brand = Brand::find($id);     
+        if( count($brand->products) > 0):
+            return response()->json(['error' => 
+                'Nem törölhető olyan márka, amhiez termék van kapcsolva']);
         endif;
-
         $brand->delete();
+        
         return response()->json(['success' => 'Márka törölve']);
     }
 }

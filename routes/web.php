@@ -16,6 +16,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/admin', [AdminController::class, 'index'])->name('admin');
 
+    // Products
     Route::resource('product', ProductController::class);
     Route::resource('brand', BrandController::class);
     Route::resource('unit', AmountUnitController::class);

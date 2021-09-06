@@ -94,8 +94,9 @@ class AmountUnitController extends Controller
     public function destroy($id)
     {
         $unit = AmountUnit::find($id);
-        if($unit->products):
-            return response()->json(['error' => 'Nem törölhető olyan mennyiségi egység, amihez termék kapcsolódik']);
+        if( count($unit->products) > 0):
+            return response()->json(['error' => 
+            'Nem törölhető olyan mennyiségi egység, amihez termék kapcsolódik']);
         endif;
         $unit->delete();
         

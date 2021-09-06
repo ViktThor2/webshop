@@ -18,10 +18,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
 </head>
-<body>
+<body class="antialiased" style="background-image: url({{ asset('img/background.jpg') }});  background-repeat: no-repeat; background-size: cover;">
     <div id="app">
-      @include('layouts.nav')
+     {{--  @include('layouts.nav') --}}
 
       <main class="py-4">
           @yield('content')

@@ -7,8 +7,7 @@
         <div class="card mt-2">
             <div class="card-header">
                 Márkák
-                <button id="new_button" class="btn btn-success" type="button"  
-                        data-toggle="modal" data-target="#BrandModal">
+                <button id="new_button" class="btn btn-success" type="button">
                     <i class="fas fa-plus fa-sm"></i>Új
                 </button>
             </div>
@@ -36,7 +35,6 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Márka létrehozása</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body" id="BrandModalBody">
@@ -58,7 +56,7 @@
                 </div>
                 <!-- Modal footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Bezár</button>
+                    <button type="button" class="btn btn-danger" id="CloseModal">Bezár</button>
                     <button type="button" class="btn btn-success" id="SubmitCreateBrandForm">Mentés</button>
                 </div>
             </div>
@@ -72,7 +70,6 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Márka szerkesztése</h4>
-                    <button type="button" class="close modelClose" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body" id="EditBrandModalBody">
@@ -105,7 +102,6 @@
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h4 class="modal-title">Márka törlése</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <!-- Modal body -->
                 <div class="modal-body">
@@ -128,7 +124,7 @@
         $(document).ready(function() 
         {
             // init datatable.
-            $('.datatable').DataTable({
+            var table = $('.datatable').DataTable({
                 processing: true,
                 serverSide: true,
                 autoWidth: false,
@@ -146,6 +142,14 @@
                 ],
             });
 
+            $('#new_button').click(function() {
+                $('#BrandModal').modal('show');
+            })
+
+            $('#CloseModal').click(function() {
+                $('#BrandModal').modal('hide');
+            })
+
             // Create article Ajax request.
             $('#SubmitCreateBrandForm').click(function(e) {
                 e.preventDefault();
@@ -161,21 +165,26 @@
                         name: $('#name').val(),
                     },
                     success: function(result) {
-                        if(result.errors) {
-                            $('.alert-danger').html('');
-                            $.each(result.errors, function(key, value) {
-                                $('.alert-danger').show();
-                                $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
-                            });
-                        } else {
                             $('.alert-danger').hide();
                             $('.alert-success').show();
                             $('.datatable').DataTable().ajax.reload();
-                            setInterval(function(){
+                            setTimeout( function() {
                                 $('.alert-success').hide();
-                                $('#CreateBrandModal').modal('hide');
-                                location.reload();
-                            }, 2000);
+                                $('#BrandModal').modal('hide');
+                                $(".modal-body input").val("")
+                            }, 1000);
+                    },  
+                    error: function (err) {
+                        if (err.status == 422) { // when status code is 422, it's a validation issue
+                            console.log(err.responseJSON);
+                            $('#success_message').fadeIn().html(err.responseJSON.message);
+                            // you can loop through the errors object and show it to the user
+                            console.warn(err.responseJSON.errors);
+                            // display errors on each form field
+                            $.each(err.responseJSON.errors, function (i, error) {
+                                var el = $(document).find('[name="'+i+'"]');
+                                el.after($('<span style="color: red;">'+error[0]+'</span>'));
+                            });
                         }
                     }
                 });
@@ -254,8 +263,9 @@
                     url: "brand/"+id,
                     method: 'DELETE',
                     success: function(result) {
+                        $('.datatable').DataTable().ajax.reload();
                         setInterval(function(){
-                            location.reload();
+//                            location.reload();
                             $('#DeleteBrandModal').hide();
                         }, 1000);
                     }
