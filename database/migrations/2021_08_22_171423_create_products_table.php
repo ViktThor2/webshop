@@ -20,13 +20,13 @@ class CreateProductsTable extends Migration
             $table->double('vat_sum');
             $table->integer('vat_id');
             $table->integer('brutto');
-            $table->integer('qty');
-            $table->integer('main_category_id');
-            $table->integer('sub_category_id');
-            $table->integer('brand_id');
-            $table->integer('amount_unit_id');  
-            $table->longText('description');
-            $table->boolean('active');
+            $table->integer('qty')->default(0);
+            $table->integer('main_category_id')->nullable();
+            $table->integer('sub_category_id')->nullable();
+            $table->integer('brand_id')->nullable();
+            $table->integer('amount_unit_id')->nullable();  
+            $table->longText('description')->nullable();
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }

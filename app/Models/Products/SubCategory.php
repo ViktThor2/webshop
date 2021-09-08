@@ -12,6 +12,11 @@ class SubCategory extends Model
     protected $table = 'sub_categories';
     protected $fillable = ['name', 'main_category_id'];
 
+    public function scopeSelect($query, $main_id)
+    {
+      $query->where('main_category_id', $main_id);
+    }
+
     public function setData($data)
     {
       $this->name = (isset($data->name) ? $data->name : null);

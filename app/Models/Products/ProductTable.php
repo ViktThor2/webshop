@@ -18,43 +18,22 @@ class ProductTable extends Product
     public function getEditForm()
     {
         $mainCategories = MainCategory::all();
-        $subCategories = SubCategory::all();
         $brands = Brand::all();
         $units = AmountUnit::all();
         $vats = Vat::all();
 
         $optionsMainCategories = '';
-        $optionsSubCategories = '';
         $optionsBrands = '';
         $optionsUnits = '';
         $optionsVats = '';
 
-        foreach($subCategories as $subCategory):
-            if($subCategory->id == $this->sub_category_id) continue;
-            $optionsSubCategories.='<option value="'.$subCategory->id.'">'.
-                $subCategory->main_category->name.' \ '.$subCategory->name.'</option>';
-        endforeach;
-
-/* 
         foreach($mainCategories as $mainCategory):
-            $optionsMainCategories.='<option value="'.$mainCategory->id.'">'.$mainCategory->name.'</option>';
-            foreach($mainCategory->sub_category as $sub):
-                if($sub->id == $this->sub_category_id) continue;
-                $optionsSubCategories.='<option value="'.$sub->id.'">'.$sub->name.'</option>';
-            endforeach;
+            if($mainCategory->id == $this->main_category_id) continue; 
+            $optionsMainCategories.='<option value="'.$mainCategory->id.'">'
+                                        .$mainCategory->name.
+                                    '</option>';
         endforeach;
-
-
-                <div class="form-floating mb-2">
-                    <select class="form-control" name="category_id" id="category_id">
-                        <option selected disabled>Kérem válasszon kategóriát</option>
-                        '.$optionsMainCategories.'
-                        '.$optionsMainCategories.'
-                    </select>
-                    <label for="sub_category_id">Kategória</label>
-                </div>
-*/      
-
+   
         foreach($brands as $brand):
             if($brand->id == $this->brand_id) continue; 
             $optionsBrands.='<option value="'.$brand->id.'">'.$brand->name.'</option>';
@@ -111,12 +90,19 @@ class ProductTable extends Product
                     </div>
                 </div>    
                 <div class="form-floating mb-2">
-                    <select class="form-control select2" name="sub_category_id" id="editSub_category_id" required>
-                        <option selected disabled>Kérem válasszon kategóriát</option>
-                        <option value="'.$this->sub_category_id.'" selected="selected">'.$this->main_category->name .' \ '.$this->sub_category->name.'</option>
-                        '.$optionsSubCategories.'
+                    <select class="form-control select2" name="main_category_id" id="editMain_category_id" required>
+                        <option disabled>Kérem válasszon főkategóriát</option>
+                        <option value="'.$this->main_category_id.'" selected="selected">'.$this->main_category->name .'</option>
+                        '.$optionsMainCategories.'
                     </select>
-                    <label for="editSub_category_id">Kategória</label>
+                    <label for="editSub_category_id">Főategória</label>
+                </div>
+                <div class="form-floating mb-2">
+                    <select class="form-control select2" name="sub_category_id" id="editSub_category_id" required>
+                        <option disabled>Kérem válasszon alkategóriát</option>
+                        <option value="'.$this->sub_category_id.'" selected="selected">'.$this->sub_category->name .'</option>
+                    </select>
+                    <label for="editSub_category_id">Alkategória</label>
                 </div>
                 <div class="form-floating mb-2">
                     <select class="form-control select2" name="brand_id" id="editBrand_id" required>

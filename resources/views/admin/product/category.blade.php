@@ -5,8 +5,7 @@
 {{-- Index --}}
 <div class="col-12">
     <div class="card mt-2">
-        <div class="card-header">
-            Kategóriák
+        <div class="card-header">Kategóriák
             <button id="new_button_main" class="btn btn-success">
                 <i class="fas fa-plus fa-sm"></i>Új Főkategória
             </button>
@@ -15,8 +14,7 @@
             </button>
         </div>
         <div class="card-body">
-            <table class="table table-condensed table-bordered
-                    table-hover datatable" id="brands-table">
+            <table class="table table-condensed table-bordered table-hover datatable">
                 <thead>
                     <tr>
                         <th width="50%" class="align-middle">Főkategória</th>

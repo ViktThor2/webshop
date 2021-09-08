@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Product;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products\{
@@ -10,6 +11,15 @@ use App\Models\Products\{
 
 class ProductController extends Controller
 {
+    protected $rules = [
+        'name' => 'required|max:255|string',
+        'netto' => 'required',
+        'vat_sum' => 'required',
+        'vat_id' => 'required',
+        'brutto' => 'required',
+        'amount_unit_id' => 'required'
+    ];
+
     public function index(Request $request)
     {
         if($request->ajax()):
@@ -20,12 +30,15 @@ class ProductController extends Controller
             endforeach;
                 
             return \DataTables::of($products)
-                ->addColumn('Actions', function($products) {
-                    return '<button type="button" class="btn btn-link btn-sm" id="getEditProductData" data-id="'.$products->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                        <button type="button" data-id="'.$products->id.'" data-toggle="modal" data-target="#DeleteProductModal" class="btn btn-link btn-sm" id="getDeleteId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
+                ->addColumn('Actions', function($data) {
+                return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.
+                        $data->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                       <button class="btn btn-link btn-sm" id="getDelete" data-id="'.
+                        $data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
                 })
                 ->addColumn('Activate', function($products) {
-                    return '<input type="checkbox" class="published" id="getActive" data-id="'.$products->id.'" '.($products->active == 0 ? : 'checked' ).'>';
+                return '<input type="checkbox" class="published" id="getActive" data-id="'
+                    .$products->id.'" '.($products->active == 0 ? : 'checked' ).'>';
                 })
                 ->rawColumns(['Actions', 'Activate'])
                 ->make(true);
@@ -42,19 +55,23 @@ class ProductController extends Controller
             ->with('subCategories', $subCategories)
             ->with('brands', $brands)
             ->with('units', $units)
-            ->with('vats', $vats);
-            
+            ->with('vats', $vats); 
     }
 
     public function store(Request $request)
     {
+        $validator = \Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
+
         $product = new Product();
         $product->setData($request);
-        $subCategory = SubCategory::find($request->sub_category_id);
-        $product->main_category_id = $subCategory->main_category->id;
         $product->save();
 
-        return response()->json(['success' => 'Termék létrehozva']);
+        return response()->json(['success' =>
+         'Termék: '.$product->name.' létrehozva']);
     }
 
     public function edit($id)
@@ -67,20 +84,29 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        $validator = \Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
+
         $product = Product::find($id);
         $product->setData($request);
         $subCategory = SubCategory::find($request->sub_category_id);
         $product->main_category_id = $subCategory->main_category->id;
         $product->update();
 
-        return response()->json(['success' => 'Termék frissítve']);
+        return response()->json(['success' =>
+         'Termék: '.$product->name.' frissítve']);
     }
 
     public function destroy($id)
     {
-        Product::destroy($id);
+        $product = Product::find($id);
+        $product->delete();
 
-        return response()->json(['success' => 'Termék törölve']);
+        return response()->json(['success' =>
+         'Termék: '.$product->name.' törölve']);
     }
 
     public function changeActive($id)
@@ -90,10 +116,26 @@ class ProductController extends Controller
         $product->save();
 
         if($product->active == true):
-            return response()->json(['success' => 'Termék '.$product->name.' aktiválva']);
+            return response()->json(['success' =>
+             'Termék '.$product->name.' aktiválva']);
         endif;
 
-        return response()->json(['success' => 'Termék '.$product->name.' inaktiválva']);
+        return response()->json(['success' =>
+         'Termék '.$product->name.' inaktiválva']);
     }
 
+    function fetch($id)
+    {
+        $data = SubCategory::Select($id)->get();
+        $output = '<option selected disabled>Kérem válasszon alkategóriát</option>';
+        if(count($data) == 0):
+            $output .= '<option disabled>Nincs alkategória</option>';
+        else:
+            foreach ($data as $row) {
+                $output .= '<option value="'.$row->id. '">'.$row->name.'</option>';
+            }
+        endif;
+
+        echo $output;
+    }
 }

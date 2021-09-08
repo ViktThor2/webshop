@@ -1,5 +1,65 @@
-$(document).ready(function() 
-{
+$(document).ready(function() {
+
+    $('#main_category_id').change(function(e) {
+        e.preventDefault();
+        var dependent = $(this).data('dependent');
+        var id = $(this).val();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/fetch/"+id,
+            method:"GET",
+            success:function(data){
+                $('#'+dependent).html(data);
+            }
+        })
+    });
+
+    $('#main_category_id').change(function(e) {
+        e.preventDefault();
+        var dependent = $(this).data('dependent');
+        var id = $(this).val();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/fetch/"+id,
+            method:"GET",
+            success:function(data){
+                $('#'+dependent).html(data);
+            }
+        })
+    })
+
+    $('.modelClose').on('click', function(){
+        $('.modal').modal('hide');
+        $('.modal').hide();
+    });
+
+    $('#new_button').click(function() {
+        $('#CreateModal').modal('show');
+    });
+
+    function response(data){
+        if ((data.errors)) {
+            toastr.error(data.errors, 'Hiba', {timeOut: 5000});
+            $.each(data.errors, function (i, error) {
+                var el = $(document).find('[name="'+i+'"]');
+                el.after($('<span id="errorSpan" style="color: red;">'+error[0]+'</span>'));
+                setTimeout( function() {
+                    $('#errorSpan').hide();
+                }, 2000);
+            });
+        } else {
+            $('.datatable').DataTable().ajax.reload();
+            $('.modal').modal('hide');
+            $('.modal').hide();
+            $(".modal-body input").val("")
+            toastr.success( data.success, 'Siker', {timeOut: 5000});
+        }
+    }
+
     $('body').on('click', '#getActive', function() {
         id = $(this).data('id');
         $.ajax({
@@ -7,7 +67,7 @@ $(document).ready(function()
             method: 'GET',
             success: function(data) {
                 $('.datatable').DataTable().ajax.reload();
-                toastr.success( data.success, 'Siker', {timeOut: 5000});
+                toastr.success( data.success, 'Siker', {timeOut: 4000});
             },
         });
     });
@@ -19,9 +79,7 @@ $(document).ready(function()
         autoWidth: false,
         pageLength: 10,
         "order": [[ 0, "desc" ]],
-        ajax: {
-            url: "http://127.0.0.1:8000/product",
-        },
+        ajax: { url: "http://127.0.0.1:8000/product" },
         columns: [
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
@@ -33,20 +91,16 @@ $(document).ready(function()
             {data: 'brutto', name: 'brutto'},
             {data: 'qty', name: 'qty'},
             {data: 'Activate', name: 'Activate'},
-            {
-                data: 'Actions', name: 'Actions',
-                orderable:false, serachable:false,sClass:'text-center'
-            },  
+            { data: 'Actions', name: 'Actions',
+                orderable:false, serachable:false },  
         ],
     });
 
     // Create article Ajax request.
-    $('#SubmitCreateProductForm').click(function(e) {
+    $('#SubmitCreate').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         $.ajax({
             url: "http://127.0.0.1:8000/product",
@@ -57,40 +111,21 @@ $(document).ready(function()
                 vat_sum: $('#vat_sum').val(),
                 vat_id: $('#vat_id').val(),
                 brutto: $('#brutto').val(),
-                qty: 0  ,
+                main_category_id: $('#main_category_id').val(),
                 sub_category_id: $('#sub_category_id').val(),
                 brand_id: $('#brand_id').val(),
                 amount_unit_id: $('#amount_unit_id').val(),
                 description: $('#description').val(),
-                active: 1,
+                qty: 0,
+                active: 1
             },
-            success: function(result) {
-                if(result.errors) {
-                    $('.alert-danger').html('');
-                    $.each(result.errors, function(key, value) {
-                        $('.alert-danger').show();
-                        $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
-                    });
-                } else {
-                    $('.alert-danger').hide();
-                    $('.alert-success').show();
-                    $('.datatable').DataTable().ajax.reload();
-                    setInterval(function(){
-                        $('.alert-success').hide();
-                        $('#CreateProductModal').modal('hide');
-                        location.reload();
-                    }, 2000);
-                }
-            }
+            success: function(data) { response(data) }
         });
     });
 
     // Get single article in EditModel
-    $('.modelClose').on('click', function(){
-        $('#EditProductModal').hide();
-    });
     var id;
-    $('body').on('click', '#getEditProductData', function(e) {
+    $('body').on('click', '#getEdit', function(e) {
         // e.preventDefault();
         $('.alert-danger').html('');
         $('.alert-danger').hide();
@@ -100,19 +135,17 @@ $(document).ready(function()
             method: 'GET',
             success: function(result) {
                 console.log(result);
-                $('#EditProductModalBody').html(result.html);
-                $('#EditProductModal').show();
+                $('#EditModalBody').html(result.html);
+                $('#EditModal').show();
             }
         });
     });
 
     // Update  Ajax request.
-    $('#SubmitEditProductForm').click(function(e) {
+    $('#SubmitEdit').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         $.ajax({
             url: "product/"+id,
@@ -123,56 +156,33 @@ $(document).ready(function()
                 vat_sum: $('#editVat_sum').val(),
                 vat_id: $('#editVat_id').val(),
                 brutto: $('#editBrutto').val(),
+                main_category_id: $('#editSub_category_id').val(),
                 sub_category_id: $('#editSub_category_id').val(),
                 brand_id: $('#editBrand_id').val(),
                 amount_unit_id: $('#editAmount_unit_id').val(),
                 description: $('#editDescription').val(),
-                qty: 0  ,
-                active: 1,
             },
-            success: function(result) {
-                if(result.errors) {
-                    $('.alert-danger').html('');
-                    $.each(result.errors, function(key, value) {
-                        $('.alert-danger').show();
-                        $('.alert-danger').append('<strong><li>'+value+'</li></strong>');
-                    });
-                } else {
-                    $('.alert-danger').hide();
-                    $('.alert-success').show();
-                    location.reload();
-                    setInterval(function(){
-                        $('.alert-success').hide();
-                        $('#EditProductModal').hide();
-                    }, 2000);
-                }
-            }
+            success: function(data) { response(data) }
         });
     });
 
 
     // Delete  request.
     var deleteID;
-    $('body').on('click', '#getDeleteId', function(){
+    $('body').on('click', '#getDelete', function(){
+        $('#DeleteModal').modal('show');
         deleteID = $(this).data('id');
     })
-    $('#SubmitDeleteProductForm').click(function(e) {
+    $('#SubmitDelete').click(function(e) {
         e.preventDefault();
         var id = deleteID;
         $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         $.ajax({
             url: "product/"+id,
             method: 'DELETE',
-            success: function(result) {
-                setInterval(function(){
-                    location.reload();
-                    $('#DeleteProductModal').hide();
-                }, 1000);
-            }
+            success: function(data) { response(data) }
         });
     });
 

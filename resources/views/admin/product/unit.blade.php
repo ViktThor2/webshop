@@ -5,8 +5,7 @@
 {{-- Index --}}
 <div class="col-md-12">
     <div class="card mt-2">
-        <div class="card-header">
-            Márkák
+        <div class="card-header">Márkák
             <button id="new_button" class="btn btn-success">
                 <i class="fas fa-plus fa-sm"></i>Új
             </button>
