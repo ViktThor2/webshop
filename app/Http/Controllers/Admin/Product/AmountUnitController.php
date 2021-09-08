@@ -18,11 +18,11 @@ class AmountUnitController extends Controller
             $units = AmountUnit::all();
 
             return \DataTables::of($units)
-                ->addColumn('Actions', function($units) {
+                ->addColumn('Actions', function($data) {
                 return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.
-                        $units->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                        $data->id.'"><i class="fas fa-edit fa-lg"></i></button>
                       <button class="btn btn-link btn-sm" id="getDelete" data-id="'.
-                        $units->id.'"><i class="fas fa-trash fa-lg"></i></button>';
+                        $data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
                 })
                 ->rawColumns(['Actions'])
                 ->make(true);

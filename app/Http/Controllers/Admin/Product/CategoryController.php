@@ -10,6 +10,15 @@ use App\Models\Products\{
 
 class CategoryController extends Controller
 {
+    protected $rulesMain = [
+        'name' => 'required|max:255|string|unique:main_categories'
+    ];
+
+    protected $rulesSub = [
+        'name' => 'required|max:255|string|unique:sub_categories',
+        'main_category_id' => 'required'
+    ];
+
     public function index(Request $request)
     {
         if($request->ajax()):
@@ -17,17 +26,21 @@ class CategoryController extends Controller
             $categories = $categoryTable->getColumns();
             
             return \DataTables::of($categories)
-                ->addColumn('Actions', function($categories) {
-                    if($categories->sub == '-'):
-                        return '<button type="button" class="btn btn-link btn-sm" id="getEditMainCategoryData" data-id="'.$categories->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                         <button type="button" data-id="'.$categories->id.'" data-toggle="modal" data-target="#DeleteMainCategoryModal" class="btn btn-link btn-sm" id="getDeleteMainId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
-                    else:
-                        return '<button type="button" class="btn btn-link btn-sm" id="getEditSubCategoryData" data-id="'.$categories->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                         <button type="button" data-id="'.$categories->id.'" data-toggle="modal" data-target="#DeleteSubCategoryModal" class="btn btn-link btn-sm" id="getDeleteSubId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
-                    endif;
+                ->addColumn('Actions', function($data) {
+                if($data->sub == '-'): return
+                    '<button class="btn btn-link btn-sm" id="getEditMain" data-id="'.
+                       $data->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                    <button class="btn btn-link btn-sm" id="getDeleteMain" data-id="'.
+                       $data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
+                else: return
+                    '<button class="btn btn-link btn-sm" id="getEditSub" data-id="'.
+                       $data->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                    <button class="btn btn-link btn-sm" id="getDeleteSub" data-id="'.
+                       $data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
+                endif;
                 })
-            ->rawColumns(['Actions'])
-            ->make(true);
+                ->rawColumns(['Actions'])
+                ->make(true);
         endif;
 
         $mainCategories = MainCategory::all();
@@ -39,24 +52,33 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         if(!$request->main_category_id):
-            $this->validate($request, [
-                'name' => 'required',
-             ]);
+
+            $validator = \Validator::make($request->all(), $this->rulesMain);
+            if ($validator->fails()) {
+                return response()->json(
+                    ['errors' => $validator->getMessageBag()->toArray()]);
+            }
+    
             $mainCategory = new MainCategory();
             $mainCategory->setData($request);
             $mainCategory->save();
 
-            return response()->json(['success' => 'Főkategória létrhozva']);
+            return response()->json(['success' =>
+             'Főkategória: '.$mainCategory->name.' létrhozva']);
         else:
-            $this->validate($request, [
-                'name' => 'required',
-                'main_category_id' => 'required'
-             ]);
+
+            $validator = \Validator::make($request->all(), $this->rulesSub);
+            if ($validator->fails()) {
+                return response()->json(
+                    ['errors' => $validator->getMessageBag()->toArray()]);
+            }
+    
             $subCategory = new SubCategory();
             $subCategory->setData($request);
             $subCategory->save();
 
-            return response()->json(['success' => 'Alkategória létrhozva']);
+            return response()->json(['success' =>
+             'Alkategória: '.$subCategory->name.' létrhozva']);
         endif;
     }
 
@@ -79,51 +101,61 @@ class CategoryController extends Controller
     public function update($id, Request $request)
     {
         if(!$request->main_category_id):
-            $this->validate($request, [
-                'name' => 'required',
-             ]);
+
+            $validator = \Validator::make($request->all(), $this->rulesMain);
+            if ($validator->fails()) {
+                return response()->json(
+                    ['errors' => $validator->getMessageBag()->toArray()]);
+            }
+
             $mainCategory = MainCategory::find($id);
             $mainCategory->setData($request);
             $mainCategory->update();
 
-            return response()->json(['success' => 'Főkategória frissítve']);
+            return response()->json(['success' =>
+             'Főkategória: '.$mainCategory->name.' frissítve']);
         else:
+
+            $validator = \Validator::make($request->all(), $this->rulesMain);
+            if ($validator->fails()) {
+                return response()->json(
+                    ['errors' => $validator->getMessageBag()->toArray()]);
+            }
+
             $subCategory = SubCategory::find($id);
-            $this->validate($request, [
-                'name' => 'required',
-                'main_category_id' => 'required'
-             ]);
             $subCategory->setData($request);
             $subCategory->update();
 
-            return response()->json(['success' => 'Alkategória frissítve']);
+            return response()->json(['success' =>
+             'Alkategória: '.$mainCategory->name.' frissítve']);
         endif;
     }
 
     public function destroy($id)
     {
         $mainCategory = MainCategory::find($id);
-        if( count($mainCategory->products) > 0):
-            return response()->json([['error' =>
+        if(count($mainCategory->products) > 0):
+            return response()->json([['errors' =>
              'Nem törölhető olyan kategória, amihez tartozik termék']]);
         endif;
         $mainCategory->deleteSub();
         $mainCategory->delete();
 
-        return response()->json(['success' => 'Főkategória törölve']);
+        return response()->json(['success' =>
+         'Főkategória: '.$mainCategory->name.' törölve']);
     }
 
     public function destroysub($id)
     {
         $subCategory = SubCategory::find($id);
-        if( count($subCategory->products) > 0):
-            return response()->json([['error' => 
+        if(count($subCategory->products) > 0):
+            return response()->json([['errors' => 
                 'Nem törölhető olyan kategória, amihez tartozik termék']]);
         endif;
         $subCategory->delete();
 
-            
-        return response()->json(['success' => 'Alkategória törölve']);
+        return response()->json(['success' =>
+         'Alkategória: '.$subCategory->name.' törölve']);
     }
 
 }

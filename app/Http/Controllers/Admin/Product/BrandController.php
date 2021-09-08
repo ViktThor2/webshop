@@ -12,11 +12,6 @@ class BrandController extends Controller
         'name' => 'required|max:255|string|unique:brands'
     ];
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         if($request->ajax()):
@@ -24,8 +19,10 @@ class BrandController extends Controller
 
             return \DataTables::of($brands)
                 ->addColumn('Actions', function($data) {
-                return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.$data->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                    <button class="btn btn-link btn-sm" id="getDelete" data-id="'.$data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
+                return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.
+                        $data->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                       <button class="btn btn-link btn-sm" id="getDelete" data-id="'.
+                        $data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
                 })
                 ->rawColumns(['Actions'])
                 ->make(true);
@@ -34,13 +31,6 @@ class BrandController extends Controller
         return view('admin.product.brand');
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validator = \Validator::make($request->all(), $this->rules);
@@ -53,16 +43,10 @@ class BrandController extends Controller
         $brand->setData($request);
         $brand->save();
 
-        return response()->json(['success' => 'Márka létrehozva']);
+        return response()->json(['success' =>
+         'Márka: '.$brand->name.' létrehozva']);
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $brand = Brand::find($id);
@@ -71,13 +55,6 @@ class BrandController extends Controller
         return response()->json(['html' => $html]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $validator = \Validator::make($request->all(), $this->rules);
@@ -90,7 +67,8 @@ class BrandController extends Controller
         $brand->setData($request);
         $brand->update();
 
-        return response()->json(['success' => 'Márka frissítve']);
+        return response()->json(['success' =>
+         'Márka: '.$brand->name.' frissítve']);
     }
 
     /**
@@ -108,6 +86,7 @@ class BrandController extends Controller
         endif;
         $brand->delete();
         
-        return response()->json(['success' => 'Márka törölve']);
+        return response()->json(['success' =>
+         'Márka: '.$brand->name.' törölve']);
     }
 }

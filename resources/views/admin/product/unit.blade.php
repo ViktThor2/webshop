@@ -7,7 +7,7 @@
     <div class="card mt-2">
         <div class="card-header">
             Márkák
-            <button id="new_button" class="btn btn-success"  
+            <button id="new_button" class="btn btn-success">
                 <i class="fas fa-plus fa-sm"></i>Új
             </button>
         </div>
@@ -20,7 +20,6 @@
                     </tr>
                 </thead>
             </table>
-
         </div>
     </div>
 </div>
@@ -94,5 +93,7 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('js/product/unit.js') }}" type="text/javascript"></script>
+    <script type="text/javascript"
+        src="{{ asset('js/admin/product/unit.js') }}">
+    </script>
 @endsection

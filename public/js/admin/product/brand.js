@@ -2,10 +2,7 @@ $(document).ready(function() {
     
     $('.modelClose').on('click', function(){
         $('.modal').modal('hide');
-    });
-
-    $('#closeEdit').on('click', function(){
-        $('#EditModal').hide();
+        $('.modal').hide();
     });
 
     $('#new_button').click(function() {
@@ -38,7 +35,7 @@ $(document).ready(function() {
         autoWidth: false,
         pageLength: 10,
         "order": [[ 0, "desc" ]],
-        ajax: { url: "http://127.0.0.1:8000/unit" },
+        ajax: { url: "http://127.0.0.1:8000/brand" },
         columns: [
             {data: 'name', name: 'name'},
             { data: 'Actions', name: 'Actions',
@@ -53,7 +50,7 @@ $(document).ready(function() {
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
         $.ajax({
-            url: "http://127.0.0.1:8000/unit",
+            url: "http://127.0.0.1:8000/brand",
             method: 'post',
             data: { name: $('#name').val() },
             success: function(data){ response(data) },
@@ -66,7 +63,7 @@ $(document).ready(function() {
         e.preventDefault();
         id = $(this).data('id');
         $.ajax({
-            url: "unit/"+id+"/edit",
+            url: "brand/"+id+"/edit",
             method: 'GET',
             success: function(data) {
                 $('#EditModalBody').html(data.html);
@@ -82,7 +79,7 @@ $(document).ready(function() {
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
         $.ajax({
-            url: "unit/"+id,
+            url: "brand/"+id,
             method: 'PUT',
             data: { name: $('#editName').val() },
             success: function(data){ response(data) },
@@ -102,7 +99,7 @@ $(document).ready(function() {
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
         $.ajax({
-            url: "unit/"+id,
+            url: "brand/"+id,
             method: 'DELETE',
             success: function(data) { response(data) },
         });
