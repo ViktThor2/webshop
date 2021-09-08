@@ -24,7 +24,10 @@ class ProductController extends Controller
                     return '<button type="button" class="btn btn-link btn-sm" id="getEditProductData" data-id="'.$products->id.'"><i class="fas fa-edit fa-lg"></i></button>
                         <button type="button" data-id="'.$products->id.'" data-toggle="modal" data-target="#DeleteProductModal" class="btn btn-link btn-sm" id="getDeleteId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
                 })
-                ->rawColumns(['Actions'])
+                ->addColumn('Activate', function($products) {
+                    return '<input type="checkbox" class="published" id="getActive" data-id="'.$products->id.'" '.($products->active == 0 ? : 'checked' ).'>';
+                })
+                ->rawColumns(['Actions', 'Activate'])
                 ->make(true);
         endif;
 
@@ -32,7 +35,7 @@ class ProductController extends Controller
         $subCategories = SubCategory::all();
         $brands = Brand::all();
         $units = AmountUnit::all();
-        $vats = Vat::all();
+        $vats = Vat::all(); 
 
         return view('admin.product.product')
             ->with('mainCategories', $mainCategories)
@@ -45,20 +48,6 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'netto' => 'required| num',
-            'vat_sum' => 'required| num',
-            'vat_id' => 'required',
-            'brutto' => 'required| num',
-            'qty' => 'required| num',
-            'main_category_id' => 'required',
-            'sub_category_id' => 'required',
-            'brand_id' => 'required',
-            'amount_unit_id' => 'required',
-            'description' => 'required',
-            'active' => 'required',
-        ]);
         $product = new Product();
         $product->setData($request);
         $subCategory = SubCategory::find($request->sub_category_id);
@@ -78,20 +67,6 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'netto' => 'required| num',
-            'vat_sum' => 'required| num',
-            'vat_id' => 'required',
-            'brutto' => 'required| num',
-            'qty' => 'required| num',
-            'main_category_id' => 'required',
-            'sub_category_id' => 'required',
-            'brand_id' => 'required',
-            'amount_unit_id' => 'required',
-            'description' => 'required',
-            'active' => 'required',
-        ]);
         $product = Product::find($id);
         $product->setData($request);
         $subCategory = SubCategory::find($request->sub_category_id);
@@ -106,6 +81,19 @@ class ProductController extends Controller
         Product::destroy($id);
 
         return response()->json(['success' => 'Termék törölve']);
+    }
+
+    public function changeActive($id)
+    {
+        $product = Product::findOrFail($id);
+        $product->active = !$product->active;
+        $product->save();
+
+        if($product->active == true):
+            return response()->json(['success' => 'Termék '.$product->name.' aktiválva']);
+        endif;
+
+        return response()->json(['success' => 'Termék '.$product->name.' inaktiválva']);
     }
 
 }

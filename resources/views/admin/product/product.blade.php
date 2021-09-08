@@ -257,5 +257,20 @@
 @endsection
 
 @section('script')
+    <script>
+        $(document).ready(function(){   
+            $('body').on('click', '#getActive', function() {
+                id = $(this).data('id');
+                $.ajax({
+                    url: "product/active/"+id,
+                    method: 'GET',
+                    success: function(data) {
+                        $('.datatable').DataTable().ajax.reload();
+                        toastr.success( data.success, 'Siker', {timeOut: 5000});
+                    },
+                });
+            });
+        });
+    </script>
     <script src="{{ asset('js/product/product.js') }}" type="text/javascript"></script>
 @endsection

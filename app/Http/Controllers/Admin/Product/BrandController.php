@@ -8,6 +8,10 @@ use App\Models\Products\Brand;
     
 class BrandController extends Controller
 {
+    protected $rules = [
+        'name' => 'required|max:255|string|unique:brands'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -19,9 +23,9 @@ class BrandController extends Controller
             $brands = Brand::all();
 
             return \DataTables::of($brands)
-                ->addColumn('Actions', function($brands) {
-                return '<button type="button" class="btn btn-link btn-sm" id="getEditBrandData" data-id="'.$brands->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                    <button type="button" data-id="'.$brands->id.'" data-toggle="modal" data-target="#DeleteBrandModal" class="btn btn-link btn-sm" id="getDeleteId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
+                ->addColumn('Actions', function($data) {
+                return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.$data->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                    <button class="btn btn-link btn-sm" id="getDelete" data-id="'.$data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
                 })
                 ->rawColumns(['Actions'])
                 ->make(true);
@@ -39,9 +43,11 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
-         $this->validate($request, [
-            'name' => 'required|string|max:255|unique:brands',
-          ]);
+        $validator = \Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
 
         $brand = new Brand();
         $brand->setData($request);
@@ -74,9 +80,11 @@ class BrandController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required|string|max:255',
-          ]);
+        $validator = \Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
 
         $brand = Brand::find($id);
         $brand->setData($request);
@@ -94,8 +102,8 @@ class BrandController extends Controller
     public function destroy($id)
     {
         $brand = Brand::find($id);     
-        if( count($brand->products) > 0):
-            return response()->json(['error' => 
+        if(count($brand->products) > 0):
+            return response()->json(['errors' => 
                 'Nem törölhető olyan márka, amhiez termék van kapcsolva']);
         endif;
         $brand->delete();

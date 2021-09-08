@@ -20,11 +20,11 @@ $(document).ready(function()
             {data: 'vat_sum', name: 'vat_sum'},
             {data: 'brutto', name: 'brutto'},
             {data: 'qty', name: 'qty'},
-            {data: 'active', name: 'active'},
+            {data: 'Activate', name: 'Activate'},
             {
                 data: 'Actions', name: 'Actions',
                 orderable:false, serachable:false,sClass:'text-center'
-            },
+            },  
         ],
     });
 

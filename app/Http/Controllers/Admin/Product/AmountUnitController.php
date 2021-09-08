@@ -8,11 +8,10 @@ use App\Models\Products\AmountUnit;
     
 class AmountUnitController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $rules = [
+        'name' => 'required|max:255|string|unique:amount_units'
+    ];
+
     public function index(Request $request)
     {
         if($request->ajax()):
@@ -20,8 +19,10 @@ class AmountUnitController extends Controller
 
             return \DataTables::of($units)
                 ->addColumn('Actions', function($units) {
-                return '<button type="button" class="btn btn-link btn-sm" id="getEditUnitData" data-id="'.$units->id.'"><i class="fas fa-edit fa-lg"></i></button>
-                    <button type="button" data-id="'.$units->id.'" data-toggle="modal" data-target="#DeleteUnitModal" class="btn btn-link btn-sm" id="getDeleteId"><i style="color:red" class="fas fa-trash-alt fa-lg"></i></button>';
+                return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.
+                        $units->id.'"><i class="fas fa-edit fa-lg"></i></button>
+                      <button class="btn btn-link btn-sm" id="getDelete" data-id="'.
+                        $units->id.'"><i class="fas fa-trash fa-lg"></i></button>';
                 })
                 ->rawColumns(['Actions'])
                 ->make(true);
@@ -30,33 +31,22 @@ class AmountUnitController extends Controller
         return view('admin.product.unit');
     }
 
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-         ]);
+        $validator = \Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
 
         $unit = new AmountUnit();
         $unit->setData($request);
         $unit->save();
 
-        return response()->json(['success' => 'Mennyiségi egység létrehozva']);
+        return response()->json(['success' =>
+         'Mennyiségi egység: '.$unit->name.' létrehozva']);
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $unit = AmountUnit::find($id);
@@ -65,41 +55,32 @@ class AmountUnitController extends Controller
         return response()->json(['html' => $html]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
-            'name' => 'required',
-         ]);
-         
+        $validator = \Validator::make($request->all(), $this->rules);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
+
         $unit = AmountUnit::find($id);
         $unit->setData($request);
         $unit->update();
 
-        return response()->json(['success' => 'Mennyiségi egység frissítve']);
+        return response()->json(['success' => 
+         'Mennyiségi egység: '.$unit->name.' frissítve']);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $unit = AmountUnit::find($id);
-        if( count($unit->products) > 0):
-            return response()->json(['error' => 
-            'Nem törölhető olyan mennyiségi egység, amihez termék kapcsolódik']);
+        $unit = AmountUnit::find($id);     
+        if(count($unit->products) > 0):
+            return response()->json(['errors' => 
+            'Nem törölhető olyan mennyiségi egység, amhiez termék van kapcsolva']);
         endif;
         $unit->delete();
         
-        return response()->json(['success' => 'Mennyiségi egység törölve']);
-    }
+        return response()->json(['success' =>
+         'Mennyiségi egység: '.$unit->name.' törölve']);
+    }   
 }

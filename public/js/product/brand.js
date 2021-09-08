@@ -1,162 +1,111 @@
-$(document).ready(function()
-{
+$(document).ready(function() {
+    
+    $('.modelClose').on('click', function(){
+        $('.modal').modal('hide');
+    });
+
+    $('#closeEdit').on('click', function(){
+        $('#EditModal').hide();
+    });
+
+    $('#new_button').click(function() {
+        $('#CreateModal').modal('show');
+    });
+
+    function response(data){
+        if ((data.errors)) {
+            toastr.error(data.errors, 'Hiba', {timeOut: 5000});
+            $.each(data.errors, function (i, error) {
+                var el = $(document).find('[name="'+i+'"]');
+                el.after($('<span id="errorSpan" style="color: red;">'+error[0]+'</span>'));
+                setTimeout( function() {
+                    $('#errorSpan').hide();
+                }, 2000);
+            });
+        } else {
+            $('.datatable').DataTable().ajax.reload();
+            $('.modal').modal('hide');
+            $('.modal').hide();
+            $(".modal-body input").val("")
+            toastr.success( data.success, 'Siker', {timeOut: 5000});
+        }
+    }
+
     // init datatable.
-    var table = $('.datatable').DataTable({
+    $('.datatable').DataTable({
         processing: true,
         serverSide: true,
         autoWidth: false,
         pageLength: 10,
         "order": [[ 0, "desc" ]],
-        ajax: {
-            url: "http://127.0.0.1:8000/brand"
-        },
+        ajax: { url: "http://127.0.0.1:8000/brand" },
         columns: [
             {data: 'name', name: 'name'},
-            {
-                data: 'Actions', name: 'Actions',
-                orderable:false, serachable:false,sClass:'text-center'
-            },
+            { data: 'Actions', name: 'Actions',
+                orderable:false, serachable:false },
         ],
     });
 
-    $('#new_button').click(function() {
-        $('#BrandModal').modal('show');
-    })
-
-    $('#CloseModal').click(function() {
-        $('#BrandModal').modal('hide');
-    })
-
     // Create article Ajax request.
-    $('#SubmitCreateBrandForm').click(function(e) {
+    $('#SubmitCreateForm').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({
-            headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
         $.ajax({
             url: "http://127.0.0.1:8000/brand",
             method: 'post',
-            data: {
-                name: $('#name').val(),
-            },
-            success: function(result) {
-                    $('.alert-danger').hide();
-                    $('.alert-success').show();
-                    $('.datatable').DataTable().ajax.reload();
-                    setTimeout( function() {
-                        $('.alert-success').hide();
-                        $('#BrandModal').modal('hide');
-                        $(".modal-body input").val("")
-                    }, 1000);
-            },  
-            error: function (err) {
-                if (err.status == 422) { // when status code is 422, it's a validation issue
-                    console.log(err.responseJSON);
-                    $('#success_message').fadeIn().html(err.responseJSON.message);
-                    // you can loop through the errors object and show it to the user
-                    console.warn(err.responseJSON.errors);
-                    // display errors on each form field
-                    $.each(err.responseJSON.errors, function (i, error) {
-                        var el = $(document).find('[name="'+i+'"]');
-                        el.after($('<span style="color: red;">'+error[0]+'</span>'));
-                    });
-                }
-            }
+            data: { name: $('#name').val() },
+            success: function(data){ response(data) },
         });
     });
 
     // Get single article in EditModel
-    $('.modelClose').on('click', function(){
-        $('#EditBrandModal').hide();
-    });
     var id;
-    $('body').on('click', '#getEditBrandData', function(e) {
-         e.preventDefault();
-        $('.alert-danger').html('');
-        $('.alert-danger').hide();
-            id = $(this).data('id');
+    $('body').on('click', '#getEdit', function(e) {
+        e.preventDefault();
+        id = $(this).data('id');
         $.ajax({
             url: "brand/"+id+"/edit",
             method: 'GET',
-            success: function(result) {
-                console.log(result);
-                $('#EditBrandModalBody').html(result.html);
-                $('#EditBrandModal').show();
+            success: function(data) {
+                $('#EditModalBody').html(data.html);
+                $('#EditModal').show();
             }
         });
     });
 
     // Update  Ajax request.
-    $('#SubmitEditBrandForm').click(function(e) {
+    $('#SubmitEditForm').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
         $.ajax({
             url: "brand/"+id,
             method: 'PUT',
-            data: {
-                name: $('#editName').val(),
-            },
-            success: function(result) {
-                    $('.alert-danger').hide();
-                    $('.alert-success').show();
-                    $('.datatable').DataTable().ajax.reload();
-                    setTimeout( function() {
-                        $('.alert-success').hide();
-                        $('#EditBrandModal').hide();
-                        $(".modal-body input").val("")
-                    }, 2000);
-            },  
-            error: function (err) {
-                if (err.status == 422) { // when status code is 422, it's a validation issue
-                    console.log(err.responseJSON);
-                    $('#success_message').fadeIn().html(err.responseJSON.message);
-                    // you can loop through the errors object and show it to the user
-                    console.warn(err.responseJSON.errors);
-                    // display errors on each form field
-                    $.each(err.responseJSON.errors, function (i, error) {
-                        var el = $(document).find('[name="'+i+'"]');
-                        el.after($('<span style="color: red;">'+error[0]+'</span>'));
-                    });
-                }
-            }
+            data: { name: $('#editName').val() },
+            success: function(data){ response(data) },
         });
     });
 
     // Delete  request.
     var deleteID;
-    $('body').on('click', '#getDeleteId', function(){
+    $('body').on('click', '#getDelete', function(){
+        $('#DeleteModal').modal('show');
         deleteID = $(this).data('id');
     })
-    $('#SubmitDeleteBrandForm').click(function(e) {
+    $('#SubmitDeleteForm').click(function(e) {
         e.preventDefault();
         var id = deleteID;
         $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
         $.ajax({
             url: "brand/"+id,
             method: 'DELETE',
-            success: function(result) {
-                    $('.alert-danger').hide();
-                    $('.alert-success').show();
-                    $('.datatable').DataTable().ajax.reload();
-                    setTimeout( function() {
-                        $('.alert-success').hide();
-                        $('#DeleteBrandModal').hide();
-                        $('.modal-backdrop').remove();
-                        console.log('teszt');
-                    }, 2000);
-            },  
+            success: function(data) { response(data) },
         });
     });
 
-
-});
+}); 

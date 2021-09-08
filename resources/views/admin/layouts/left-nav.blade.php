@@ -1,7 +1,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ route('admin') }}" class="brand-link">
+    <a href="{{ route('home') }}" class="brand-link">
       <img src="img/logo.png" alt="Audio Life  Logo" style="width: 230px"; height="120px">
     </a>
 

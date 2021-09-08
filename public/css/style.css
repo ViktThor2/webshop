@@ -29,3 +29,11 @@ thead {
   float: right;
   text-align: center;
 }
+#getDelete {
+    color:red;
+}
+.published {
+    width: 22px;
+    height: 22px;
+    margin-top: 5px;
+}

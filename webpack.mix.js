@@ -28,3 +28,6 @@ mix.scripts([
   'node_modules/admin-lte/dist/js/adminlte.js',
 ], 'public/js/admin.js')
  .sass('resources/sass/admin.scss', 'public/css');
+
+
+ 

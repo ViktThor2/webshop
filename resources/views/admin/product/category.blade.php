@@ -22,8 +22,8 @@
                         table-hover datatable" id="brands-table">
                     <thead>
                         <tr>
-                            <th class="align-middle">Alkategória</th>
                             <th width="50%" class="align-middle">Főkategória</th>
+                            <th class="align-middle">Alkategória</th>
                             <th width="100px"></th>
                         </tr>
                     </thead>

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('admin.layouts.admin')
 
 @section('content')
 <div class="container">
@@ -13,8 +13,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    {{ __('You are logged in!') }}
+                        <h6>Üdv ismét {{ \Auth::guard()->user()->name }}
                 </div>
             </div>
         </div>
