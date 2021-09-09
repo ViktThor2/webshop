@@ -40,7 +40,7 @@ $(document).ready(function() {
             {data: 'name', name: 'name'},
             { data: 'Actions', name: 'Actions',
                 orderable:false, serachable:false },
-        ],
+        ],  
     });
 
     // Create article Ajax request.

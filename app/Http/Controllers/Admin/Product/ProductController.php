@@ -30,7 +30,9 @@ class ProductController extends Controller
                 
             return \DataTables::of($products)
                 ->addColumn('Actions', function($data) {
-                return '<button class="btn btn-link btn-sm" id="getEdit" data-id="'.
+                return '<button class="btn btn-link btn-sm" id="getImage" data-id="'.
+                        $data->id.'"><i class="far fa-images fa-lg"></i></button>
+                       <button class="btn btn-link btn-sm" id="getEdit" data-id="'.
                         $data->id.'"><i class="fas fa-edit fa-lg"></i></button>
                        <button class="btn btn-link btn-sm" id="getDelete" data-id="'.
                         $data->id.'"><i class="fas fa-trash fa-lg"></i></button>';
@@ -135,5 +137,27 @@ class ProductController extends Controller
         endif;
 
         echo $output;
+    }
+
+    public function image(Request $request)
+    {
+        /*
+        $validator = \Validator::make([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(
+                ['errors' => $validator->getMessageBag()->toArray()]);
+        }
+        */
+        $imageName = time().'.'.$request->image->extension();
+
+        $request->image->move(public_path('img/product'), $imageName);
+
+        $product = Product::find($request->id);
+        $product->image = $imageName;
+        $product->update();
+
+        return response()->json(['success' => 'Kép sikeresen feltöltve!']);
     }
 }

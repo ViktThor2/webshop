@@ -15,6 +15,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('product', ProductController::class);
     Route::get('product/active/{id}', [ProductController::class, 'changeActive'])->name('product.change.active');
     Route::get('product/fetch/{id}', [ProductController::class, 'fetch'])->name('product.fetch');
+    Route::post('product/image', [ProductController::class, 'image'])->name('product.image');
 
     Route::resource('brand', BrandController::class);
     Route::resource('unit', AmountUnitController::class);

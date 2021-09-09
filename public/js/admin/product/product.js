@@ -1,28 +1,8 @@
 $(document).ready(function() {
 
-    $('#main_category_id').change(function(e) {
-        e.preventDefault();
-        var dependent = $(this).data('dependent');
-        var id = $(this).val();
-        $.ajaxSetup({
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-        });
-        $.ajax({
-            url: "http://127.0.0.1:8000/product/fetch/"+id,
-            method:"GET",
-            success:function(data){
-                $('#'+dependent).html(data);
-            }
-        });
-    });
-
     $('.modelClose').on('click', function(){
         $('.modal').modal('hide');
         $('.modal').hide();
-    });
-
-    $('#new_button').click(function() {
-        $('#CreateModal').modal('show');
     });
 
     function response(data){
@@ -74,7 +54,7 @@ $(document).ready(function() {
                 "orderable":      false,
                 "searchable":     false,
                 "data":           null,
-                "defaultContent": ''
+                "defaultContent": '<i class="fas fa-plus-square"></i>'
             },
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
@@ -107,6 +87,9 @@ $(document).ready(function() {
     });
 
     // Create article Ajax request.
+    $('#new_button').click(function() {
+        $('#CreateModal').modal('show');
+    });
     $('#SubmitCreate').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({
@@ -178,6 +161,7 @@ $(document).ready(function() {
         $('#DeleteModal').modal('show');
         deleteID = $(this).data('id');
     })
+
     $('#SubmitDelete').click(function(e) {
         e.preventDefault();
         var id = deleteID;
@@ -188,6 +172,52 @@ $(document).ready(function() {
             url: "product/"+id,
             method: 'DELETE',
             success: function(data) { response(data) }
+        });
+    });
+
+    // Image request
+    var ImageID
+    $('body').on('click', '#getImage', function(){
+        $('#ImageModal').modal('show');
+        ImageID = $(this).data('id');
+    });
+
+    $('#SubmitImage').click(function(e) {
+        var data = new FormData();
+        jQuery.each(jQuery('#image')[0].files, function(i, file) {
+            data.append('image', file);
+        });
+        data.append('id', ImageID);
+        e.preventDefault();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/image",
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            method: 'POST',
+            type: 'POST',
+            success: function(data){ response(data) },
+        });
+    });
+
+    // Status change
+    $('#main_category_id').change(function(e) {
+        e.preventDefault();
+        var dependent = $(this).data('dependent');
+        var id = $(this).val();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/fetch/"+id,
+            method:"GET",
+            success:function(data){
+                $('#'+dependent).html(data);
+            }
         });
     });
 

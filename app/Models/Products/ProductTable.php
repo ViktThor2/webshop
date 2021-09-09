@@ -129,7 +129,7 @@ class ProductTable extends Product
                 </div>
                 <div class="form-floating mb-2">
                     <textarea class="form-control" name="description" id="editDescription"
-                        placeholder="Leírás ..." style="height: 150px">'.$this->description.'</textarea>
+                        placeholder="Leírás ..." style="height: 180px">'.$this->description.'</textarea>
                     <label for="editDescription">Leírás...</label>
                 </div>';        
     }

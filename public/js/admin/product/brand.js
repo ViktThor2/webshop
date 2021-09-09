@@ -29,12 +29,16 @@ $(document).ready(function() {
     }
 
     // init datatable.
-    $('.datatable').DataTable({
+    var table = $('.datatable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'excel', 'pdf'
+        ],
         processing: true,
         serverSide: true,
         autoWidth: false,
         pageLength: 10,
-        "order": [[ 0, "desc" ]],
+        order: [[0, 'desc']],
         ajax: { url: "http://127.0.0.1:8000/brand" },
         columns: [
             {data: 'name', name: 'name'},
@@ -42,6 +46,7 @@ $(document).ready(function() {
                 orderable:false, serachable:false },
         ],
     });
+
 
     // Create article Ajax request.
     $('#SubmitCreateForm').click(function(e) {

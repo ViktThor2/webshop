@@ -36,6 +36,9 @@ thead {
 #getDeleteSub {
     color: red;
 }
+#getImage {
+    color: green;
+}
 .published {
     width: 22px;
     height: 22px;
@@ -53,4 +56,7 @@ thead {
 #new_button_main {
     float: right;
     padding: 2px 40px;
+}
+.fa-plus-square {
+    margin-top: 50%;;
 }

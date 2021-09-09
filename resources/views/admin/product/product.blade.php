@@ -19,16 +19,16 @@
                      table-hover datatable" id="product-table">
                 <thead>
                     <tr>
-                        <th class="align-middle"></th>
-                        <th class="align-middle">Id</th>
+                        <th width="2%" class="align-middle"></th>
+                        <th width="2%" class="align-middle">Id</th>
                         <th class="align-middle">Név</th>
-                        <th class="align-middle">Főkategória</th>
-                        <th class="align-middle">Alkategória</th>
-                        <th class="align-middle">Márka</th>
-                        <th class="align-middle">Ár</th>
-                        <th class="align-middle">Mennyiség</th>
-                        <th class="align-middle">Aktív</th>
-                        <th width="100px"></th>
+                        <th width="15%" class="align-middle">Főkategória</th>
+                        <th width="10%" class="align-middle">Alkategória</th>
+                        <th width="10%" class="align-middle">Márka</th>
+                        <th width="10%" class="align-middle">Ár</th>
+                        <th width="8%" class="align-middle">Mennyiség</th>
+                        <th width="5%"  class="align-middle">Aktív</th>
+                        <th width="150px"></th>
                     </tr>
                 </thead>
             </table>
@@ -127,7 +127,7 @@
                 </div>
                 <div class="form-floating mb-2">
                     <textarea class="form-control" name="description" id="description" 
-                        placeholder="Leírás ..." style="height: 150px"></textarea>
+                        placeholder="Leírás ..." style="height: 180px"></textarea>
                     <label for="description">Leírás...</label>
                 </div>
             {{--Form end --}}
@@ -177,6 +177,27 @@
             <div class="modal-footer">
                 <button class="btn btn-danger modelClose">Nem</button>
                 <button class="btn btn-success" id="SubmitDelete">Igen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+  <!-- Image  Modal -->
+  <div class="modal" id="ImageModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Kép feltöltése</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                  <input type="file" name="image" id="image" class="form-control">
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button class="btn btn-danger modelClose">Bezár</button>
+                <button class="btn btn-success" id="SubmitImage">Mentés</button>
             </div>
         </div>
     </div>
