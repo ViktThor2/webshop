@@ -92,8 +92,7 @@ class ProductController extends Controller
 
         $product = Product::find($id);
         $product->setData($request);
-        $subCategory = SubCategory::find($request->sub_category_id);
-        $product->main_category_id = $subCategory->main_category->id;
+        dd($product);
         $product->update();
 
         return response()->json(['success' =>

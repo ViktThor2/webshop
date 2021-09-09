@@ -23,6 +23,7 @@ class ProductTable extends Product
         $vats = Vat::all();
 
         $optionsMainCategories = '';
+        $optionsSubCategories = '';
         $optionsBrands = '';
         $optionsUnits = '';
         $optionsVats = '';
@@ -32,6 +33,11 @@ class ProductTable extends Product
             $optionsMainCategories.='<option value="'.$mainCategory->id.'">'
                                         .$mainCategory->name.
                                     '</option>';
+        endforeach;
+
+        foreach($this->main_category->sub_categories as $sub):
+            if($sub->id == $this->sub_category_id) continue; 
+            $optionsSubCategories.='<option value="'.$sub->id.'">'.$sub->name.'</option>';
         endforeach;
    
         foreach($brands as $brand):
@@ -90,7 +96,7 @@ class ProductTable extends Product
                     </div>
                 </div>    
                 <div class="form-floating mb-2">
-                    <select class="form-control select2" name="main_category_id" id="editMain_category_id" required>
+                    <select class="form-control select2" data-dependent="editSub_category_id" name="editMain_category_id" id="editMain_category_id" required>
                         <option disabled>Kérem válasszon főkategóriát</option>
                         <option value="'.$this->main_category_id.'" selected="selected">'.$this->main_category->name .'</option>
                         '.$optionsMainCategories.'
@@ -98,9 +104,10 @@ class ProductTable extends Product
                     <label for="editSub_category_id">Főategória</label>
                 </div>
                 <div class="form-floating mb-2">
-                    <select class="form-control select2" name="sub_category_id" id="editSub_category_id" required>
+                    <select class="form-control select2" name="editSub_category_id" id="editSub_category_id" required>
                         <option disabled>Kérem válasszon alkategóriát</option>
                         <option value="'.$this->sub_category_id.'" selected="selected">'.$this->sub_category->name .'</option>
+                        '.$optionsSubCategories.'
                     </select>
                     <label for="editSub_category_id">Alkategória</label>
                 </div>

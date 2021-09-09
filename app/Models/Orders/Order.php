@@ -14,13 +14,13 @@ class Order extends Model
 
     public function setData($data)
     {
-      $this->customer_id = (isset($data->customer_id) ? $data->customer_id : null);
-      $this->netto = (isset($data->netto) ? $data->netto : null);
-      $this->vat = (isset($data->vat) ? $data->vat : null);
-      $this->brutto = (isset($data->brutto) ? $data->brutto : null);
-      $this->status_id = (isset($data->status_id) ? $data->status_id : null);
-      $this->delivery_mode_id = (isset($data->delivery_mode_id) ? $data->delivery_mode_id : null);
-      $this->payment_method_id = (isset($data->payment_method_id) ? $data->payment_method_id : null);
+      if($data->customer_id) $this->customer_id = $data->customer_id;
+      if($data->netto) $this->netto = $data->netto;
+      if($data->vat) $this->vat = $data->vat;
+      if($data->brutto) $this->brutto = $data->brutto;
+      if($data->status_id) $this->status_id = $data->status_id;
+      if($data->delivery_mode_id) $this->delivery_mode_id = $data->delivery_mode_id;
+      if($data->payment_method_id) $this->payment_method_id = $data->payment_method_id;
     }
 
     public function customer(){

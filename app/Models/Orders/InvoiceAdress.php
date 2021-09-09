@@ -14,15 +14,15 @@ class InvoiceAdress extends Model
 
     public function setData($data)
     {
-      $this->order_id = (isset($data->order_id) ? $data->order_id : null);
-      $this->customer_id = (isset($data->customer_id) ? $data->customer_id : null);
-      $this->name = (isset($data->name) ? $data->name : null);
-      $this->email = (isset($data->email) ? $data->email : null);
-      $this->phone = (isset($data->phone) ? $data->phone : null);
-      $this->post_code = (isset($data->post_code) ? $data->post_code : null);
-      $this->city = (isset($data->city) ? $data->city : null);
-      $this->street = (isset($data->street) ? $data->street : null);
-      $this->house_number = (isset($data->house_number) ? $data->house_number : null);
+      if($data->order_id) $this->order_id = $data->order_id;
+      if($data->customer_id) $this->customer_id = $data->customer_id;
+      if($data->name) $this->name = $data->name;
+      if($data->email) $this->email = $data->email;
+      if($data->phone) $this->phone = $data->phone;
+      if($data->post_code) $this->post_code = $data->post_code;
+      if($data->city) $this->city = $data->city;
+      if($data->street) $this->street = $data->street;
+      if($data->house_number) $this->house_number = $data->house_number;
     }
 
     public function order(){

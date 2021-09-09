@@ -15,18 +15,18 @@ class Product extends Model
 
     public function setData($data)
     {
-      $this->name = $data->name ??'';
-      $this->netto = $data->netto ??'';
-      $this->vat_sum =  $data->vat_sum ??'';
-      $this->vat_id =  $data->vat_id ??'';
-      $this->brutto =  $data->brutto ??'';
-      $this->qty	 = $data->qty ??'';
-      $this->main_category_id = $data->main_category_id ??'';
-      $this->sub_category_id = $data->sub_category_id ??'';
-      $this->brand_id = $data->brand_id ??'';
-      $this->amount_unit_id = $data->amount_unit_id ??'';
-      $this->description = $data->description ??'';
-      $this->active = $data->active ??'';
+      if($data->name) $this->name = $data->name;
+      if($data->netto) $this->netto = $data->netto;
+      if($data->vat_sum) $this->vat_sum =  $data->vat_sum;
+      if($data->vat_id) $this->vat_id =  $data->vat_id;
+      if($data->brutto) $this->brutto =  $data->brutto;
+      if($data->main_category_id) $this->main_category_id = $data->main_category_id;
+      if($data->sub_category_id) $this->sub_category_id = $data->sub_category_id;
+      if($data->brand_id) $this->brand_id = $data->brand_id;
+      if($data->amount_unit_id) $this->amount_unit_id = $data->amount_unit_id;
+      if($data->description) $this->description = $data->description;
+      if($data->active) $this->active = $data->active;
+      if($data->qty) $this->qty = $data->qty;
     }
 
     public function main_category(){

@@ -19,8 +19,8 @@ class SubCategory extends Model
 
     public function setData($data)
     {
-      $this->name = (isset($data->name) ? $data->name : null);
-      $this->main_category_id = (isset($data->main_category_id) ? $data->main_category_id : null);
+      if($data->name) $this->name = $data->name;
+      if($data->main_category_id) $this->main_category_id = $data->main_category_id;
     }
 
     public function products(){

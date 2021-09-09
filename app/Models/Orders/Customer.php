@@ -14,10 +14,10 @@ class Customer extends Model
 
     public function setData($data)
     {
-      $this->name = (isset($data->name) ? $data->name : null);
-      $this->email = (isset($data->email) ? $data->email : null);
-      $this->password = (isset($data->password) ? \Hash::make($data->password) : null);
-      $this->phone = (isset($data->phone) ? $data->phone : null);
+      if($data->name) $this->name = $data->name;
+      if($data->email) $this->email = $data->email;
+      if($data->password) $this->password = \Hash::make($data->password);
+      if($data->phone) $this->phone = $data->phone;
     }
 
     public function orders(){

@@ -15,13 +15,13 @@ class ShopCart extends Model
 
     public function setData($data)
     {
-      $this->order_id = (isset($data->order_id) ? $data->order_id : null);
-      $this->product_id = (isset($data->product_id) ? $data->product_id : null);
-      $this->product_name = (isset($data->product_name) ? $data->product_name : null);
-      $this->product_netto = (isset($data->product_netto) ? $data->product_netto : null);
-      $this->product_vat	 = (isset($data->product_vat	) ? $data->product_vat : null);
-      $this->product_brutto = (isset($data->product_brutto) ? $data->product_brutto : null);
-      $this->product_qty = (isset($data->product_qty) ? $data->product_qty : null);
+      if($data->order_id) $this->order_id = $data->order_id;
+      if($data->product_id) $this->product_id = $data->product_id;
+      if($data->product_name) $this->product_name = $data->product_name;
+      if($data->product_netto) $this->product_netto = $data->product_netto;
+      if($data->product_vat) $this->product_vat = $data->product_vat;
+      if($data->product_brutto) $this->product_brutto = $data->product_brutto;
+      if($data->product_qty) $this->product_qty = $data->product_qty;
     }
 
     public function order(){

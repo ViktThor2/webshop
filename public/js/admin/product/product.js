@@ -5,7 +5,7 @@ $(document).ready(function() {
         var dependent = $(this).data('dependent');
         var id = $(this).val();
         $.ajaxSetup({
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         $.ajax({
             url: "http://127.0.0.1:8000/product/fetch/"+id,
@@ -13,24 +13,8 @@ $(document).ready(function() {
             success:function(data){
                 $('#'+dependent).html(data);
             }
-        })
+        });
     });
-
-    $('#main_category_id').change(function(e) {
-        e.preventDefault();
-        var dependent = $(this).data('dependent');
-        var id = $(this).val();
-        $.ajaxSetup({
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
-        });
-        $.ajax({
-            url: "http://127.0.0.1:8000/product/fetch/"+id,
-            method:"GET",
-            success:function(data){
-                $('#'+dependent).html(data);
-            }
-        })
-    })
 
     $('.modelClose').on('click', function(){
         $('.modal').modal('hide');
@@ -126,7 +110,7 @@ $(document).ready(function() {
     // Get single article in EditModel
     var id;
     $('body').on('click', '#getEdit', function(e) {
-        // e.preventDefault();
+        e.preventDefault();
         $('.alert-danger').html('');
         $('.alert-danger').hide();
             id = $(this).data('id');
@@ -134,9 +118,24 @@ $(document).ready(function() {
             url: "product/"+id+"/edit",
             method: 'GET',
             success: function(result) {
-                console.log(result);
                 $('#EditModalBody').html(result.html);
                 $('#EditModal').show();
+            }
+        });
+    });
+
+    $('#editMain_category_id').change(function(e) {
+        e.preventDefault();
+        var dependent = $(this).data('dependent');
+        var id = $(this).val();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/fetch/"+id,
+            method:"GET",
+            success:function(data){
+                $('#'+dependent).html(data);
             }
         });
     });
@@ -162,7 +161,7 @@ $(document).ready(function() {
                 amount_unit_id: $('#editAmount_unit_id').val(),
                 description: $('#editDescription').val(),
             },
-            success: function(data) { response(data) }
+           /* success: function(data) { response(data) }*/
         });
     });
 
