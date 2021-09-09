@@ -27,7 +27,7 @@ $(document).ready(function() {
 
     function response(data){
         if ((data.errors)) {
-            toastr.error(data.errors, 'Hiba', {timeOut: 5000});
+            toastr.error(data.errors, 'Hiba', {timeOut: 4000});
             $.each(data.errors, function (i, error) {
                 var el = $(document).find('[name="'+i+'"]');
                 el.after($('<span id="errorSpan" style="color: red;">'+error[0]+'</span>'));
@@ -39,8 +39,10 @@ $(document).ready(function() {
             $('.datatable').DataTable().ajax.reload();
             $('.modal').modal('hide');
             $('.modal').hide();
-            $(".modal-body input").val("")
-            toastr.success( data.success, 'Siker', {timeOut: 5000});
+            $(".modal-body input").val("");
+            $('.select2').prop('selectedIndex',0);
+            $('#description').val("");
+            toastr.success( data.success, 'Siker', {timeOut: 4000});
         }
     }
 
@@ -55,9 +57,11 @@ $(document).ready(function() {
             },
         });
     });
+
+    var template = Handlebars.compile($("#details-template").html());
     
     // init datatable.
-    $('.datatable').DataTable({
+    const dataTable = $('.datatable').DataTable({
         processing: true,
         serverSide: true,
         autoWidth: false,
@@ -65,19 +69,41 @@ $(document).ready(function() {
         "order": [[ 0, "desc" ]],
         ajax: { url: "http://127.0.0.1:8000/product" },
         columns: [
+            {
+                "className":      'details-control',
+                "orderable":      false,
+                "searchable":     false,
+                "data":           null,
+                "defaultContent": ''
+            },
             {data: 'id', name: 'id'},
             {data: 'name', name: 'name'},
             {data: 'main_category_id', name: 'main_category_id'},
             {data: 'sub_category_id', name: 'sub_category_id'},
             {data: 'brand_id', name: 'brand_id'},
-            {data: 'netto', name: 'netto'},
-            {data: 'vat_sum', name: 'vat_sum'},
             {data: 'brutto', name: 'brutto'},
             {data: 'qty', name: 'qty'},
             {data: 'Activate', name: 'Activate'},
             { data: 'Actions', name: 'Actions',
                 orderable:false, serachable:false },  
         ],
+    });
+
+    // Add event listener for opening and closing details
+    $('#product-table tbody').on('click', 'td.details-control', function () {
+        const tr = $(this).closest('tr');
+        const row = dataTable.row( tr );
+
+        if ( row.child.isShown() ) {
+            // This row is already open - close it
+            row.child.hide();
+            tr.removeClass('shown');
+        }
+        else {
+            // Open this row
+            row.child( template(row.data()) ).show();
+            tr.addClass('shown');
+        }
     });
 
     // Create article Ajax request.
@@ -100,42 +126,22 @@ $(document).ready(function() {
                 brand_id: $('#brand_id').val(),
                 amount_unit_id: $('#amount_unit_id').val(),
                 description: $('#description').val(),
-                qty: 0,
-                active: 1
             },
             success: function(data) { response(data) }
         });
     });
 
-    // Get single article in EditModel
     var id;
+    // Get single article in EditModel
     $('body').on('click', '#getEdit', function(e) {
         e.preventDefault();
-        $('.alert-danger').html('');
-        $('.alert-danger').hide();
-            id = $(this).data('id');
+        id = $(this).data('id');
         $.ajax({
             url: "product/"+id+"/edit",
             method: 'GET',
             success: function(result) {
                 $('#EditModalBody').html(result.html);
                 $('#EditModal').show();
-            }
-        });
-    });
-
-    $('#editMain_category_id').change(function(e) {
-        e.preventDefault();
-        var dependent = $(this).data('dependent');
-        var id = $(this).val();
-        $.ajaxSetup({
-            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
-        });
-        $.ajax({
-            url: "http://127.0.0.1:8000/product/fetch/"+id,
-            method:"GET",
-            success:function(data){
-                $('#'+dependent).html(data);
             }
         });
     });
@@ -155,13 +161,13 @@ $(document).ready(function() {
                 vat_sum: $('#editVat_sum').val(),
                 vat_id: $('#editVat_id').val(),
                 brutto: $('#editBrutto').val(),
-                main_category_id: $('#editSub_category_id').val(),
+                main_category_id: $('#editMain_category_id').val(),
                 sub_category_id: $('#editSub_category_id').val(),
                 brand_id: $('#editBrand_id').val(),
                 amount_unit_id: $('#editAmount_unit_id').val(),
                 description: $('#editDescription').val(),
             },
-           /* success: function(data) { response(data) }*/
+            success: function(data) { response(data) }
         });
     });
 

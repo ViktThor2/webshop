@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Product;
 
-use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products\{
@@ -92,7 +91,6 @@ class ProductController extends Controller
 
         $product = Product::find($id);
         $product->setData($request);
-        dd($product);
         $product->update();
 
         return response()->json(['success' =>
@@ -127,6 +125,7 @@ class ProductController extends Controller
     {
         $data = SubCategory::Select($id)->get();
         $output = '<option selected disabled>Kérem válasszon alkategóriát</option>';
+        
         if(count($data) == 0):
             $output .= '<option disabled>Nincs alkategória</option>';
         else:

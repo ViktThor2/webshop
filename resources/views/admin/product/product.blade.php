@@ -15,17 +15,17 @@
             </button>
         </div>
         <div class="card-body">
-            <table class="table table-condensed table-bordered table-hover datatable">
+            <table class="table table-condensed table-bordered
+                     table-hover datatable" id="product-table">
                 <thead>
                     <tr>
+                        <th class="align-middle"></th>
                         <th class="align-middle">Id</th>
                         <th class="align-middle">Név</th>
                         <th class="align-middle">Főkategória</th>
                         <th class="align-middle">Alkategória</th>
                         <th class="align-middle">Márka</th>
-                        <th class="align-middle">Nettó</th>
-                        <th class="align-middle">Áfa</th>
-                        <th class="align-middle">Bruttó</th>
+                        <th class="align-middle">Ár</th>
                         <th class="align-middle">Mennyiség</th>
                         <th class="align-middle">Aktív</th>
                         <th width="100px"></th>
@@ -185,6 +185,44 @@
 @endsection
 
 @section('script')
+
+    <script id="details-template" type="text/x-handlebars-template">
+        <table class="table">
+            <tr>
+                <td width="25%">Név:</td>
+                <td>@{{ name }}</td>
+            </tr>
+            <tr>
+                <td>Nettó:</td>
+                <td>@{{ netto }}</td>
+            </tr>
+            <tr>
+                <td>Áfa:</td>
+                <td>@{{ vat_sum }}</td>
+            </tr>
+            <tr>
+                <td>Bruttó:</td>
+                <td>@{{ brutto }}</td>
+            </tr>
+            <tr>
+                <td>Márka:</td>
+                <td>@{{ brand_id }}</td>
+            </tr>
+            <tr>
+                <td>Kategória:</td>
+                <td>@{{ main_category_id }} / @{{ sub_category_id }}</td>
+            </tr>
+            <tr>
+                <td>Mennyiség:</td>
+                <td>@{{ qty }}</td>
+            </tr>
+            <tr>
+                <td>Leírás:</td>
+                <td>@{{ description }}</td>
+            </tr>
+        </table>
+    </script>
+
     <script type="text/javascript"
         src="{{ asset('js/admin/product/product.js') }}">
     </script>
