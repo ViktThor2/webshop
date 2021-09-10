@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Product;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products\{
-    Product, ProductTable, MainCategory, SubCategory, Brand, AmountUnit, Vat
+    Product, ProductTable, MainCategory, SubCategory, Brand, AmountUnit, Vat, ProductImage
 };
 
 class ProductController extends Controller
@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         if($request->ajax()):
-            $products = ProductTable::all();
+            $products = Product::all();
 
             foreach($products as $product):
                 $product->getColumns();
@@ -139,25 +139,33 @@ class ProductController extends Controller
         echo $output;
     }
 
-    public function image(Request $request)
+    public function imageUpload(Request $request)
     {
-        /*
-        $validator = \Validator::make([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        $rule = ['image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'];
+        
+        $validator = \Validator::make($request->all(), $rule);
         if ($validator->fails()) {
             return response()->json(
                 ['errors' => $validator->getMessageBag()->toArray()]);
         }
-        */
+
         $imageName = time().'.'.$request->image->extension();
 
         $request->image->move(public_path('img/product'), $imageName);
 
-        $product = Product::find($request->id);
-        $product->image = $imageName;
-        $product->update();
+        $productImage = new ProductImage();
+        $productImage->setData($request->id, $imageName);
+        $productImage->save();
 
-        return response()->json(['success' => 'Kép sikeresen feltöltve!']);
+        return response()->json(['success' =>
+         'A kép sikeresen feltöltve!']);
+    }
+
+    public function imageDelete(Request $request)
+    {
+        $image_path = "/img/product/'.$request->image.'";
+            if(File::exists($image_path)) {
+                File::delete($image_path);
+        }
     }
 }

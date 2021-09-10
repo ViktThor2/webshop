@@ -210,6 +210,18 @@
     <script id="details-template" type="text/x-handlebars-template">
         <table class="table">
             <tr>
+                <td></td>
+                <td>
+                    <div class="col-12" id="product_image">
+                        <img src="img/product/@{{ image }}" style="height: 200px">
+                        <button class="btn btn-link btn-sm" id="deleteImage"
+                                 data-id="@{{ id }}"  data-image="@{{ image }}">
+                            <i class="fas fa-trash fa-lg"></i>
+                        </button>'
+                    </div>
+                </td>
+            </tr>
+            <tr>
                 <td width="25%">Név:</td>
                 <td>@{{ name }}</td>
             </tr>

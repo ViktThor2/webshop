@@ -12,7 +12,7 @@ class ProductTable extends Product
         $this->qty .= ' ' .$this->amount_unit->name;
         $this->netto = number_format($this->netto, 2, ',', '.'). ' Ft';
         $this->brutto = number_format($this->brutto, 2, ',', '.'). ' Ft';
-        $this->vat_sum = number_format($this->vat_sum, 2, ',', '.'). ' Ft (' .$this->vat_id. '%)'; 
+        $this->vat_sum = number_format($this->vat_sum, 2, ',', '.'). ' Ft (' .$this->vat_id. '%)';
     }
 
     public function getEditForm()

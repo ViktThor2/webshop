@@ -41,10 +41,6 @@ class Product extends Model
       return $this->belongsTo(Brand::class);
     }
 
-    public function shop_carts(){
-      return $this->hasMany(ShopCart::class);
-    }
-
     public function vat(){
       return $this->belongsTo(Vat::class);
     }
@@ -52,4 +48,25 @@ class Product extends Model
     public function amount_unit(){
       return $this->belongsTo(AmountUnit::class);
     }
+
+    public function shop_carts(){
+      return $this->hasMany(ShopCart::class);
+    }
+
+    public function product_images(){
+        return $this->hasMany(ProductImage::class);
+    }
+
+    public function getColumns()
+    {
+        $this->main_category_id = $this->main_category->name ??'';
+        $this->sub_category_id = $this->sub_category->name ??'';
+        $this->brand_id = $this->brand->name ??'';
+        $this->qty .= ' ' .$this->amount_unit->name;
+        $this->netto = number_format($this->netto, 2, ',', '.'). ' Ft';
+        $this->brutto = number_format($this->brutto, 2, ',', '.'). ' Ft';
+        $this->vat_sum = number_format($this->vat_sum, 2, ',', '.'). ' Ft (' .$this->vat_id. '%)';
+        $this->image = $this->product_images->first()->image;
+    }
+  
 }

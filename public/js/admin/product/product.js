@@ -193,7 +193,7 @@ $(document).ready(function() {
             headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
         $.ajax({
-            url: "http://127.0.0.1:8000/product/image",
+            url: "http://127.0.0.1:8000/product/image/upload",
             data: data,
             cache: false,
             contentType: false,
@@ -201,6 +201,25 @@ $(document).ready(function() {
             method: 'POST',
             type: 'POST',
             success: function(data){ response(data) },
+        });
+    });
+
+    var ProductID
+    $('body').on('click', '#deleteImage', function(e){
+        ProductID = $(this).data('id');
+        ImageID = $(this).data('image');
+        e.preventDefault();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/image/delete",
+            method: 'post',
+            data: {
+                product: ProductID,
+                image: ImageID,
+            },
+            success: function(data) { response(data) }
         });
     });
 
@@ -220,5 +239,25 @@ $(document).ready(function() {
             }
         });
     });
+
+
+    // Status change
+    $('body').on('change', '#editMain_category_id', function(e){
+        e.preventDefault();
+        var dependent = $(this).data('dependent');
+        var id = $(this).val();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/fetch/"+id,
+            method:"GET",
+            success:function(data){
+                $('#'+dependent).html(data);
+            }
+        });
+    });
+
+    
 
 }); 

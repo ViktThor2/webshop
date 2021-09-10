@@ -60,3 +60,9 @@ thead {
 .fa-plus-square {
     margin-top: 50%;;
 }
+#product_image #deleteImage {
+    position: absolute;
+    top: 0;
+    right: 10%;
+    color: red;
+}
