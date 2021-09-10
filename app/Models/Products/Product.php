@@ -66,7 +66,10 @@ class Product extends Model
         $this->netto = number_format($this->netto, 2, ',', '.'). ' Ft';
         $this->brutto = number_format($this->brutto, 2, ',', '.'). ' Ft';
         $this->vat_sum = number_format($this->vat_sum, 2, ',', '.'). ' Ft (' .$this->vat_id. '%)';
-        $this->image = $this->product_images->first()->image;
+        $this->image1 = $this->product_images[0]->image ??'';
+        $this->image2  = $this->product_images[1]->image ??'';
+        $this->image3  = $this->product_images[2]->image ??'';
+        $this->image4  = $this->product_images[3]->image ??'';
     }
   
 }

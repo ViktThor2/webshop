@@ -204,10 +204,15 @@ $(document).ready(function() {
         });
     });
 
+    // Delete Image
     var ProductID
-    $('body').on('click', '#deleteImage', function(e){
+    $('body').on('click', '#deleteImage', function(){
+        $('#DeleteImageModal').modal('show');
         ProductID = $(this).data('id');
         ImageID = $(this).data('image');
+    })
+
+    $('#SubmitDeleteImage').click(function(e) {
         e.preventDefault();
         $.ajaxSetup({
             headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}

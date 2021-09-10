@@ -20,4 +20,10 @@ class ProductImage extends Model
     public function product(){
         return $this->belongsTo(Product::class);
     }
+
+    public function scopeProductImage($query, $product, $image)
+    {
+        $query->where('product_id', $product)
+            ->where('image', 'LIKE', "%{$image}%");
+    }
 }

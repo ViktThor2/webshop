@@ -182,8 +182,8 @@
     </div>
 </div>
 
-  <!-- Image  Modal -->
-  <div class="modal" id="ImageModal">
+<!-- Image  Modal -->
+<div class="modal" id="ImageModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <!-- Modal Header -->
@@ -203,6 +203,27 @@
     </div>
 </div>
 
+<!--Image Delete  Modal -->
+<div class="modal" id="DeleteImageModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Kép törlése</h4>
+            </div>
+            <!-- Modal body -->
+            <div class="modal-body">
+                <h4>Biztos, hogy törölni szeretnéd a képet?</h4>
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button class="btn btn-danger modelClose">Nem</button>
+                <button class="btn btn-success" id="SubmitDeleteImage">Igen</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('script')
@@ -212,12 +233,35 @@
             <tr>
                 <td></td>
                 <td>
-                    <div class="col-12" id="product_image">
-                        <img src="img/product/@{{ image }}" style="height: 200px">
-                        <button class="btn btn-link btn-sm" id="deleteImage"
-                                 data-id="@{{ id }}"  data-image="@{{ image }}">
-                            <i class="fas fa-trash fa-lg"></i>
-                        </button>'
+                    <div class="row">
+                        <div class="col-3" id="product_image">
+                            <img src="img/product/@{{ image1 }}" id="product_img">
+                            <button class="btn btn-link btn-sm" id="deleteImage"
+                                    data-id="@{{ id }}"  data-image="@{{ image }}">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </button>'
+                        </div>
+                        <div class="col-3" id="product_image">
+                            <img src="img/product/@{{ image2 }}" id="product_img">
+                            <button class="btn btn-link btn-sm" id="deleteImage"
+                                    data-id="@{{ id }}"  data-image="@{{ image }}">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </button>'
+                        </div>
+                        <div class="col-3" id="product_image">
+                            <img src="img/product/@{{ image3 }}" id="product_img">
+                            <button class="btn btn-link btn-sm" id="deleteImage"
+                                    data-id="@{{ id }}"  data-image="@{{ image }}">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </button>'
+                        </div>
+                        <div class="col-3" id="product_image">
+                            <img src="img/product/@{{ image4 }}" id="product_img">
+                            <button class="btn btn-link btn-sm" id="deleteImage"
+                                    data-id="@{{ id }}"  data-image="@{{ image }}">
+                                <i class="fas fa-trash fa-lg"></i>
+                            </button>'
+                        </div>
                     </div>
                 </td>
             </tr>

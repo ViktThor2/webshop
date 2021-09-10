@@ -153,19 +153,29 @@ class ProductController extends Controller
 
         $request->image->move(public_path('img/product'), $imageName);
 
+        $product = Product::find($request->id);
+        if(count($product->product_images) == 4){
+            return response()->json(['errors' =>
+                'Egy terméknek maximum 4 képe lehet!']);
+        }
+
         $productImage = new ProductImage();
         $productImage->setData($request->id, $imageName);
         $productImage->save();
 
         return response()->json(['success' =>
-         'A kép sikeresen feltöltve!']);
+         'A '.$productImage->product->name.' képe sikeresen feltöltve!']);
     }
 
     public function imageDelete(Request $request)
     {
-        $image_path = "/img/product/'.$request->image.'";
-            if(File::exists($image_path)) {
-                File::delete($image_path);
-        }
+        $productImage = ProductImage::ProductImage(
+            $request->product, $request->image)->first();
+
+        unlink(public_path('img/product/'.$productImage->image));
+        $productImage->delete();
+
+        return response()->json(['success' =>
+        'A '.$productImage->product->name.' képe sikeresen törölve!']);
     }
 }

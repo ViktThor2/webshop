@@ -63,6 +63,11 @@ thead {
 #product_image #deleteImage {
     position: absolute;
     top: 0;
-    right: 10%;
+    left: 10%;
     color: red;
+}
+#product_img {
+    padding: 0;
+    height: 200px;
+    max-width: 280px;
 }
