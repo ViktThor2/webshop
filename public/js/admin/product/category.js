@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function () {
 
     $('#new_button_main').on('click', function(){
         $('#MainModal').modal('show');
@@ -32,8 +32,30 @@ $(document).ready(function() {
         }
     }
 
+    function error(err){
+        if (err.status == 403) { 
+            console.log(err.responseJSON);
+            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 4000});
+        }
+    }
+
     // init datatable.
     $('.datatable').DataTable({
+        dom:"<'row'<'col-md-2'l><'col-md-7'B><'col-md-3'f>>" +
+        "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'lf>>" +
+        "<'row'<'col-sm-12'tr>>" +
+        "<'row'<'d-none d-md-flex justify-content-between mt-2 mb-2'ip>>" +
+        "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'ip>>",
+        lengthMenu: [
+            [ 10, 25, 50, -1 ],
+            [ '10 találat', '25 találat', '50 találat', 'Összes találat' ]
+        ],
+        buttons: [
+            { extend: 'excel', className: 'btn-primary' },
+            { extend: 'csv', className: 'btn-primary' },
+            { extend: 'pdf', className: 'btn-primary' },
+            { extend: 'print', className: 'btn-primary' },
+        ],
         processing: true,
         serverSide: true,
         autoWidth: false,
@@ -59,7 +81,8 @@ $(document).ready(function() {
             url: "http://127.0.0.1:8000/category",
             method: 'post',
             data: { name: $('#mainCatName').val() },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -77,7 +100,8 @@ $(document).ready(function() {
                 name: $('#name').val(),
                 main_category_id: $('#main_category_id').val(),
             },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -126,7 +150,8 @@ $(document).ready(function() {
             url: "category/"+id,
             method: 'PUT',
             data:{ name: $('#editMainName').val() },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -144,7 +169,8 @@ $(document).ready(function() {
                 name: $('#editSubName').val(),
                 main_category_id: $('#editMain_category_id').val(),
             },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -165,7 +191,8 @@ $(document).ready(function() {
         $.ajax({
             url: "category/"+id,
             method: 'DELETE',
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -186,7 +213,8 @@ $(document).ready(function() {
         $.ajax({
             url: "subcategory/"+id,
             method: 'DELETE',
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 

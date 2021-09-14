@@ -28,6 +28,13 @@ $(document).ready(function() {
         }
     }
 
+    function error(err){
+        if (err.status == 403) { 
+            console.log(err.responseJSON);
+            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 4000});
+        }
+    }
+
     // init datatable.
     var table = $('.datatable').DataTable({
         dom: 'Bfrtip',
@@ -58,7 +65,8 @@ $(document).ready(function() {
             url: "http://127.0.0.1:8000/brand",
             method: 'post',
             data: { name: $('#name').val() },
-            success: function(data){ response(data) },
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -87,7 +95,8 @@ $(document).ready(function() {
             url: "brand/"+id,
             method: 'PUT',
             data: { name: $('#editName').val() },
-            success: function(data){ response(data) },
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -107,6 +116,7 @@ $(document).ready(function() {
             url: "brand/"+id,
             method: 'DELETE',
             success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 

@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(function () {
 
     $('.modelClose').on('click', function(){
         $('.modal').modal('hide');
@@ -26,6 +26,13 @@ $(document).ready(function() {
         }
     }
 
+    function error(err){
+        if (err.status == 403) { 
+            console.log(err.responseJSON);
+            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 4000});
+        }
+    }
+
     $('body').on('click', '#getActive', function() {
         id = $(this).data('id');
         $.ajax({
@@ -41,12 +48,29 @@ $(document).ready(function() {
     var template = Handlebars.compile($("#details-template").html());
     
     // init datatable.
-    const dataTable = $('.datatable').DataTable({
+    let dataTable = $('.datatable').DataTable({
+        dom:"<'row'<'col-md-2'l><'col-md-7'B><'col-md-3'f>>" +
+            "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'lf>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'d-none d-md-flex justify-content-between mt-2 mb-2'ip>>" +
+            "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'ip>>",
+            lengthMenu: [
+            [ 10, 25, 50, -1 ],
+            [ '10 találat', '25 találat', '50 találat', 'Összes találat' ]
+        ],
+        buttons: [
+            { extend: 'excel', className: 'btn-primary' },
+            { extend: 'csv', className: 'btn-primary' },
+            { extend: 'pdf', className: 'btn-primary' },
+            { extend: 'print', className: 'btn-primary' },
+        //    { extend: 'colvis', className: 'btn-warning' },
+        ],
         processing: true,
         serverSide: true,
         autoWidth: false,
+        deferRender: true,
         pageLength: 10,
-        "order": [[ 0, "desc" ]],
+        order: [[ 0, "desc" ]],
         ajax: { url: "http://127.0.0.1:8000/product" },
         columns: [
             {
@@ -110,7 +134,8 @@ $(document).ready(function() {
                 amount_unit_id: $('#amount_unit_id').val(),
                 description: $('#description').val(),
             },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -125,7 +150,8 @@ $(document).ready(function() {
             success: function(result) {
                 $('#EditModalBody').html(result.html);
                 $('#EditModal').show();
-            }
+            },
+            error: function (err) { error(err) }
         });
     });
 
@@ -150,7 +176,8 @@ $(document).ready(function() {
                 amount_unit_id: $('#editAmount_unit_id').val(),
                 description: $('#editDescription').val(),
             },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -171,7 +198,8 @@ $(document).ready(function() {
         $.ajax({
             url: "product/"+id,
             method: 'DELETE',
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -201,6 +229,7 @@ $(document).ready(function() {
             method: 'POST',
             type: 'POST',
             success: function(data){ response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -224,7 +253,8 @@ $(document).ready(function() {
                 product: ProductID,
                 image: ImageID,
             },
-            success: function(data) { response(data) }
+            success: function(data) { response(data) },
+            error: function (err) { error(err) }
         });
     });
 
@@ -245,7 +275,6 @@ $(document).ready(function() {
         });
     });
 
-
     // Status change
     $('body').on('change', '#editMain_category_id', function(e){
         e.preventDefault();
@@ -264,5 +293,4 @@ $(document).ready(function() {
     });
 
     
-
 }); 

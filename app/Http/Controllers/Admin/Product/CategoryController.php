@@ -19,6 +19,14 @@ class CategoryController extends Controller
         'main_category_id' => 'required'
     ];
 
+    function __construct()
+    {
+         $this->middleware('permission:kategória-lista', ['only' => ['index']]);
+         $this->middleware('permission:kategória-létrehozás', ['only' => ['create','store']]);
+         $this->middleware('permission:kategória-szerkesztés', ['only' => ['edit','update']]);
+         $this->middleware('permission:kategória-törlés', ['only' => ['destroy']]);
+    }
+
     public function index(Request $request)
     {
         if($request->ajax()):

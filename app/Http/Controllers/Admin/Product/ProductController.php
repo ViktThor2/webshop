@@ -19,8 +19,17 @@ class ProductController extends Controller
         'amount_unit_id' => 'required'
     ];
 
-    public function index(Request $request)
+    function __construct()
     {
+         $this->middleware('permission:termék-lista', ['only' => ['index']]);
+         $this->middleware('permission:termék-létrehozás', ['only' => ['create','store']]);
+         $this->middleware('permission:termék-szerkesztés', ['only' => ['edit','update']]);
+         $this->middleware('permission:termék-törlés', ['only' => ['destroy']]);
+         $this->middleware('permission:termék-kép-szerkesztés', ['only' => ['imageUpload', 'imageDelete']]);
+    }
+
+    public function index(Request $request)
+    {      
         if($request->ajax()):
             $products = Product::all();
 

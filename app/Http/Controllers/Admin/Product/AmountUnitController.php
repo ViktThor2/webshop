@@ -12,6 +12,14 @@ class AmountUnitController extends Controller
         'name' => 'required|max:255|string|unique:amount_units'
     ];
 
+    function __construct()
+    {
+         $this->middleware('permission:mennyiségi-egység-lista', ['only' => ['index']]);
+         $this->middleware('permission:mennyiségi-egység-létrehozás', ['only' => ['create','store']]);
+         $this->middleware('permission:mennyiségi-egység-szerkesztés', ['only' => ['edit','update']]);
+         $this->middleware('permission:mennyiségi-egység-törlés', ['only' => ['destroy']]);
+    }
+
     public function index(Request $request)
     {
         if($request->ajax()):
@@ -39,9 +47,7 @@ class AmountUnitController extends Controller
                 ['errors' => $validator->getMessageBag()->toArray()]);
         }
 
-        $unit = new AmountUnit();
-        $unit->setData($request);
-        $unit->save();
+        $unit = AmountUnit::create($request->all());
 
         return response()->json(['success' =>
          'Mennyiségi egység: '.$unit->name.' létrehozva']);

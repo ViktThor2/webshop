@@ -16,8 +16,8 @@
 
           {{-- Termékkezelő --}}     
           <li class="nav-header">Adminisztráció</li>
-          <li class="nav-item has-treeview menu-open">
-            <a href="#" class="nav-link active">
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Termékkezelő
@@ -25,33 +25,65 @@
               </p>
             </a>
             <ul class="nav nav-treeview">
-              <li class="nav-item">
+              @can('termék-lista')<li class="nav-item">
                 <a href="{{ route('product.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Termékek</p>
                 </a>
-              </li>
-              <li class="nav-item">
+              </li>@endcan
+              @can('kategória-lista')<li class="nav-item">
                 <a href="{{ route('category.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Kategóriák</p>
                 </a>
-              </li>
-              <li class="nav-item">
+              </li>@endcan
+              @can('márka-lista')<li class="nav-item">
                 <a href="{{ route('brand.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Márkák</p>
                 </a>
-              </li>
-              <li class="nav-item">
+              </li>@endcan
+              @can('mennyiségi-egység-lista')<li class="nav-item">
                 <a href="{{ route('unit.index') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Mennyiségi egységek</p>
                 </a>
-              </li>
+              </li>@endcan
             </ul>
           </li>
           {{-- Termékkezelő vége --}}
+
+          {{-- Felhasználókezelő --}}
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-user"></i>
+              <p>
+                Felhasználókezelő
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              @can('felhasználó-lista')<li class="nav-item">
+                <a href="{{ route('user.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Felhasználók</p>
+                </a>
+              </li>@endcan
+              @can('szerep-lista')<li class="nav-item">
+                <a href="{{ route('role.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Szerepek</p>
+                </a>
+              </li>@endcan
+              @can('jogosultság-lista')<li class="nav-item">
+                <a href="{{ route('permission.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Jogosultságok</p>
+                </a>
+              </li>@endcan
+            </ul>
+          </li>
+          {{-- Felhasználókezelő vége --}}
 
           {{-- Rendeléskezelő --}}
           <li class="nav-item has-treeview">
@@ -70,72 +102,9 @@
                   <p>Top Navigation</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="pages/layout/boxed.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Boxed</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Sidebar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-topnav.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Navbar</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/fixed-footer.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Fixed Footer</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/layout/collapsed-sidebar.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Collapsed Sidebar</p>
-                </a>
-              </li>
             </ul>
           </li>
-          {{-- Rendeléskezelő vége --}}
-
-          {{-- Felhasználókezelő --}}
-          <li class="nav-item has-treeview">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-chart-pie"></i>
-              <p>
-                Felhasználókezelő
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="pages/charts/chartjs.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>ChartJS</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/flot.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Flot</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="pages/charts/inline.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Inline</p>
-                </a>
-              </li>
-            </ul>
-          </li>
-          {{-- Felhasználókezelő vége --}}
-
+          {{-- Rendeléskezelő vége --}}          
           
         </ul>
       </nav>

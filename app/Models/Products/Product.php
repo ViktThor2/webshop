@@ -9,7 +9,6 @@ use App\Models\Orders\ShopCart;
 class Product extends Model
 {
     use HasFactory;
-
     protected $table = 'products';
     protected $guarded = array();
 

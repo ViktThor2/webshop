@@ -12,6 +12,14 @@ class BrandController extends Controller
         'name' => 'required|max:255|string|unique:brands'
     ];
 
+    function __construct()
+    {
+         $this->middleware('permission:márka-lista', ['only' => ['index']]);
+         $this->middleware('permission:márka-létrehozás', ['only' => ['create','store']]);
+         $this->middleware('permission:márka-szerkesztés', ['only' => ['edit','update']]);
+         $this->middleware('permission:márka-törlés', ['only' => ['destroy']]);
+    }
+
     public function index(Request $request)
     {
         if($request->ajax()):

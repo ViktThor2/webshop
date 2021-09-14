@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\Product\{
     ProductController, BrandController, CategoryController, AmountUnitController
 };
+use App\Http\Controllers\Admin\User\{
+    UserController, RoleController, PermissionController
+};
 
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\Admin\HomeController::class, 'index'])->name('home');
@@ -24,4 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::get('subcategory/{id}/edit', [CategoryController::class, 'editsub'])->name('edit.subcategory');
     Route::delete('subcategory/{id}', [CategoryController::class, 'destroysub'])->name('delete.subcategory');
 
+
+    // User
+    Route::resource('user', UserController::class);
+    Route::resource('role', RoleController::class);
+    Route::resource('permission', PermissionController::class);
 });
