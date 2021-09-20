@@ -7,7 +7,7 @@ $(function () {
 
     function response(data){
         if ((data.errors)) {
-            toastr.error(data.errors, 'Hiba', {timeOut: 4000});
+            toastr.error(data.errors, 'Hiba', {timeOut: 3000});
             $.each(data.errors, function (i, error) {
                 var el = $(document).find('[name="'+i+'"]');
                 el.after($('<span id="errorSpan" style="color: red;">'+error[0]+'</span>'));
@@ -22,17 +22,18 @@ $(function () {
             $(".modal-body input").val("");
             $('.select2').prop('selectedIndex',0);
             $('#description').val("");
-            toastr.success( data.success, 'Siker', {timeOut: 4000});
+            toastr.success( data.success, 'Siker', {timeOut: 3000});
         }
     }
 
     function error(err){
         if (err.status == 403) { 
             console.log(err.responseJSON);
-            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 4000});
+            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 3000});
         }
     }
 
+    // Status change
     $('body').on('click', '#getActive', function() {
         id = $(this).data('id');
         $.ajax({
@@ -40,57 +41,99 @@ $(function () {
             method: 'GET',
             success: function(data) {
                 $('.datatable').DataTable().ajax.reload();
-                toastr.success( data.success, 'Siker', {timeOut: 4000});
+                toastr.success( data.success, 'Siker', {timeOut: 3000});
             },
+            error: function (err) { 
+                error(err);
+                $('.datatable').DataTable().ajax.reload();
+            }
         });
     });
 
     var template = Handlebars.compile($("#details-template").html());
-    
-    // init datatable.
-    let dataTable = $('.datatable').DataTable({
-        dom:"<'row'<'col-md-2'l><'col-md-7'B><'col-md-3'f>>" +
-            "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'lf>>" +
-            "<'row'<'col-sm-12'tr>>" +
-            "<'row'<'d-none d-md-flex justify-content-between mt-2 mb-2'ip>>" +
-            "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'ip>>",
-            lengthMenu: [
-            [ 10, 25, 50, -1 ],
-            [ '10 találat', '25 találat', '50 találat', 'Összes találat' ]
-        ],
-        buttons: [
-            { extend: 'excel', className: 'btn-primary' },
-            { extend: 'csv', className: 'btn-primary' },
-            { extend: 'pdf', className: 'btn-primary' },
-            { extend: 'print', className: 'btn-primary' },
-        //    { extend: 'colvis', className: 'btn-warning' },
-        ],
-        processing: true,
-        serverSide: true,
-        autoWidth: false,
-        deferRender: true,
-        pageLength: 10,
-        order: [[ 0, "desc" ]],
-        ajax: { url: "http://127.0.0.1:8000/product" },
-        columns: [
-            {
-                "className":      'details-control',
-                "orderable":      false,
-                "searchable":     false,
-                "data":           null,
-                "defaultContent": '<i class="fas fa-plus-square"></i>'
+
+    fetch_data();
+    function fetch_data()
+    {
+        // init datatable.
+        let dataTable = $('.datatable').DataTable({
+            dom:"<'row'<'col-md-2'l><'col-md-7'B><'col-md-3'f>>" +
+                "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'lf>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'d-none d-md-flex justify-content-between mt-2 mb-2'ip>>" +
+                "<'row'<'d-flex d-md-none justify-content-between mt-2 mb-2'ip>>",
+                lengthMenu: [
+                [ 10, 25, 50, -1 ],
+                [ '10 találat', '25 találat', '50 találat', 'Összes találat' ]
+            ],
+            buttons: [
+                { extend: 'excel', className: 'btn-primary' },
+                { extend: 'csv', className: 'btn-primary' },
+                { extend: 'pdf', className: 'btn-primary' },
+                { extend: 'print', className: 'btn-primary' },
+            //    { extend: 'colvis', className: 'btn-warning' },
+            ],
+            processing: true,
+            serverSide: true,
+            autoWidth: false,
+            deferRender: true,
+            pageLength: 10,
+            order: [[ 0, "desc" ]],
+            ajax: { 
+                url: "http://127.0.0.1:8000/product",
+                data: {
+                    search_main_category: $('#main_category').val(),
+                    search_sub_category: $('#sub_category').val(),
+                    search_brand : $('#brand').val(),
+                    search_min_price : $('#price-min').val(),
+                    search_max_price : $('#price-max').val(),
+                }
             },
-            {data: 'id', name: 'id'},
-            {data: 'name', name: 'name'},
-            {data: 'main_category_id', name: 'main_category_id'},
-            {data: 'sub_category_id', name: 'sub_category_id'},
-            {data: 'brand_id', name: 'brand_id'},
-            {data: 'brutto', name: 'brutto'},
-            {data: 'qty', name: 'qty'},
-            {data: 'Activate', name: 'Activate'},
-            { data: 'Actions', name: 'Actions',
-                orderable:false, serachable:false },  
-        ],
+            columns: [
+                {
+                    "className":      'details-control',
+                    "orderable":      false,
+                    "searchable":     false,
+                    "data":           null,
+                    "defaultContent": '<i class="fas fa-plus-square"></i>'
+                },
+                {data: 'id', name: 'id'},
+                {data: 'name', name: 'name'},
+                {data: 'main_category_id', name: 'main_category_id'},
+                {data: 'sub_category_id', name: 'sub_category_id'},
+                {data: 'brand_id', name: 'brand_id'},
+                {data: 'brutto', name: 'brutto'},
+                {data: 'qty', name: 'qty'},
+                {data: 'Activate', name: 'Activate'},
+                { data: 'Actions', name: 'Actions',
+                    orderable:false, serachable:false },  
+            ],
+        });
+    }
+
+    $('#main_category').change(function(){
+        $('.datatable').DataTable().destroy();
+        fetch_data();
+    });
+
+    $('#sub_category').change(function(){
+        $('.datatable').DataTable().destroy();
+        fetch_data();
+    });
+
+    $('#brand').change(function(){
+        $('.datatable').DataTable().destroy();
+        fetch_data();
+    });
+
+    $('#price-min').keyup(function(){
+        $('.datatable').DataTable().destroy();
+        fetch_data();
+    });
+
+    $('#price-max').keyup(function(){
+        $('.datatable').DataTable().destroy();
+        fetch_data();
     });
 
     // Add event listener for opening and closing details
@@ -258,7 +301,7 @@ $(function () {
         });
     });
 
-    // Status change
+    // Category
     $('#main_category_id').change(function(e) {
         e.preventDefault();
         var dependent = $(this).data('dependent');
@@ -275,7 +318,7 @@ $(function () {
         });
     });
 
-    // Status change
+    // Category
     $('body').on('change', '#editMain_category_id', function(e){
         e.preventDefault();
         var dependent = $(this).data('dependent');
@@ -292,5 +335,21 @@ $(function () {
         });
     });
 
+    // Category
+    $('#main_category').change(function(e) {
+        e.preventDefault();
+        var dependent = $(this).data('dependent');
+        var id = $(this).val();
+        $.ajaxSetup({
+            headers:{'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        $.ajax({
+            url: "http://127.0.0.1:8000/product/fetch/"+id,
+            method:"GET",
+            success:function(data){
+                $('#'+dependent).html(data);
+            }
+        });
+    });
     
 }); 

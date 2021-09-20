@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Users\PermissionForm;
 
 class PermissionController extends Controller
 {
@@ -14,10 +15,10 @@ class PermissionController extends Controller
 
     function __construct()
     {
-/*          $this->middleware('permission:jogosultság-lista', ['only' => ['index']]);
+         $this->middleware('permission:jogosultság-lista', ['only' => ['index']]);
          $this->middleware('permission:jogosultság-létrehozás', ['only' => ['create','store']]);
          $this->middleware('permission:jogosultság-szerkesztés', ['only' => ['edit','update']]);
-         $this->middleware('permission:jogosultság-törlés', ['only' => ['destroy']]); */
+         $this->middleware('permission:jogosultság-törlés', ['only' => ['destroy']]);
     }
 
     public function index(Request $request)
@@ -56,7 +57,7 @@ class PermissionController extends Controller
 
     public function edit($id)
     {
-        $permission = Permission::find($id);
+        $permission = PermissionForm::find($id);
         $html = $permission->getEditForm();
 
         return response()->json(['html' => $html]);
@@ -71,7 +72,7 @@ class PermissionController extends Controller
         }
 
         $permission = Permission::find($id);
-        $permission->setData($request);
+        $permission->name = $request->name;
         $permission->update();
 
         return response()->json(['success' =>

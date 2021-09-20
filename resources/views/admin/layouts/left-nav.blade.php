@@ -14,8 +14,10 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
 
-          {{-- Termékkezelő --}}     
+          {{-- Adminisztráció --}}     
           <li class="nav-header">Adminisztráció</li>
+
+          {{-- Termékkezelő --}}     
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -85,6 +87,44 @@
           </li>
           {{-- Felhasználókezelő vége --}}
 
+          {{-- Cégkezelő --}}
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon far fa-building"></i>
+              <p>
+                Cégkezelő
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('company.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Saját cég</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Partnerek</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Partnerek termékei</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          {{-- Cégkezelő vége --}}
+          
+          {{-- Adminisztráció vége --}}
+
+
+          {{-- Forgalom --}}     
+          <li class="nav-header">Forgalom</li>
+
           {{-- Rendeléskezelő --}}
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">
@@ -97,14 +137,37 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="pages/layout/top-nav.html" class="nav-link">
+                <a href="#" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Top Navigation</p>
                 </a>
               </li>
             </ul>
           </li>
-          {{-- Rendeléskezelő vége --}}          
+          {{-- Rendeléskezelő vége --}}
+
+          {{-- Készletkezelő --}}
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-cubes"></i>
+              <p>
+                Készletkezelő
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              @can('termék-lista')<li class="nav-item">
+                <a href="{{ route('product.index') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Termékek</p>
+                </a>
+              </li>@endcan
+            </ul>
+          </li>
+          {{-- Készletkezelő vége--}}
+
+          {{-- Forgalom vége --}}
+ 
           
         </ul>
       </nav>

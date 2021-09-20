@@ -2,7 +2,7 @@
 
 namespace App\Models\Products;
 
-class ProductTable extends Product
+class ProductForm extends Product
 {
     public function getColumns()
     {

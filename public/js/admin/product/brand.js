@@ -11,7 +11,7 @@ $(document).ready(function() {
 
     function response(data){
         if ((data.errors)) {
-            toastr.error(data.errors, 'Hiba', {timeOut: 5000});
+            toastr.error(data.errors, 'Hiba', {timeOut: 3000});
             $.each(data.errors, function (i, error) {
                 var el = $(document).find('[name="'+i+'"]');
                 el.after($('<span id="errorSpan" style="color: red;">'+error[0]+'</span>'));
@@ -24,14 +24,14 @@ $(document).ready(function() {
             $('.modal').modal('hide');
             $('.modal').hide();
             $(".modal-body input").val("")
-            toastr.success( data.success, 'Siker', {timeOut: 5000});
+            toastr.success( data.success, 'Siker', {timeOut: 3000});
         }
     }
 
     function error(err){
         if (err.status == 403) { 
             console.log(err.responseJSON);
-            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 4000});
+            toastr.error(err.responseJSON.message, 'Hiba', {timeOut: 3000});
         }
     }
 

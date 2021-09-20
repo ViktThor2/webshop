@@ -8,7 +8,7 @@ use App\Models\Orders\ShopCart;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, ProductTrait;
     protected $table = 'products';
     protected $guarded = array();
 
@@ -28,35 +28,28 @@ class Product extends Model
       if($data->qty) $this->qty = $data->qty;
     }
 
-    public function main_category(){
-      return $this->belongsTo(MainCategory::class);
-    }
+    public function scopeSearch($query, $data)
+    {
+      if ($data->search_main_category) {
+        $query->where('main_category_id', $data->search_main_category);
+      }
 
-    public function sub_category(){
-      return $this->belongsTo(SubCategory::class);
-    }
+      if ($data->search_sub_category) {
+        $query->where('sub_category_id', $data->search_sub_category);
+      }
 
-    public function brand(){
-      return $this->belongsTo(Brand::class);
-    }
+      if ($data->search_brand) {
+        $query->where('brand_id', $data->search_brand);
+      }
 
-    public function vat(){
-      return $this->belongsTo(Vat::class);
-    }
+      if( $data->search_min_price || $data->search_max_price ) {
+          $priceMin = $data->search_min_price ? : 0;
+          $priceMax = $data->search_max_price ? : static::max('brutto');
+          $query->whereBetween('brutto', [$priceMin, $priceMax]);
+      }
+    } 
 
-    public function amount_unit(){
-      return $this->belongsTo(AmountUnit::class);
-    }
-
-    public function shop_carts(){
-      return $this->hasMany(ShopCart::class);
-    }
-
-    public function product_images(){
-        return $this->hasMany(ProductImage::class);
-    }
-
-    public function getColumns()
+    public function getTableColumns()
     {
         $this->main_category_id = $this->main_category->name ??'';
         $this->sub_category_id = $this->sub_category->name ??'';

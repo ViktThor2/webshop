@@ -5,10 +5,13 @@
 {{-- Index --}}
 <div class="col-md-12">
     <div class="card mt-2">
-        <div class="card-header">Jogosultságok
-            <button id="new_button" class="btn btn-success">
-                <i class="fas fa-plus fa-sm"></i>Új
-            </button>
+        <div class="card-header">
+            <h3 class="card-title">Jogosultságok</h3>
+            <div class="card-tools">
+                <button id="new_button" class="btn btn-success">
+                    <i class="fas fa-plus fa-sm"></i>Új
+                </button>            
+            </div>
         </div>
         <div class="card-body">
             <table class="table table-condensed table-bordered table-hover datatable">

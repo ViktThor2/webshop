@@ -5,13 +5,16 @@
 {{-- Index --}}
 <div class="col-12">
     <div class="card mt-2">
-        <div class="card-header">Kategóriák
-            <button id="new_button_main" class="btn btn-success">
-                <i class="fas fa-plus fa-sm"></i>Új Főkategória
-            </button>
-            <button id="new_button_sub" class="btn btn-success">
-                <i class="fas fa-plus fa-sm"></i>Új Alkategória
-            </button>
+        <div class="card-header">
+            <h3 class="card-title">Kategóriák</h3>
+            <div class="card-tools">
+                <button id="new_button_main" class="btn btn-success">
+                    <i class="fas fa-plus fa-sm"></i>Új Főkategória
+                </button>
+                <button id="new_button_sub" class="btn btn-success">
+                    <i class="fas fa-plus fa-sm"></i>Új Alkategória
+                </button>       
+            </div>
         </div>
         <div class="card-body">
             <table class="table table-condensed table-bordered table-hover datatable">

@@ -8,11 +8,19 @@
 
 {{-- Index --}}
 <div class="col-md-12">
-    <div class="card mt-2">
-        <div class="card-header">Termékek
-            <button id="new_button" class="btn btn-success">
-                <i class="fas fa-plus fa-sm"></i>Új
-            </button>
+
+    {{-- Kereső --}}
+    @include('admin.product.product-filter')
+
+    {{-- Táblázat --}}  
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Termékek</h3>
+            <div class="card-tools">
+                <button id="new_button" class="btn btn-success">
+                    <i class="fas fa-plus fa-sm"></i>Új
+                </button>            
+            </div>
         </div>
         <div class="card-body">
             <table class="table table-condensed table-bordered
@@ -37,8 +45,8 @@
 </div>
     
 <!-- Create  Modal -->
-<div class="modal" id="CreateModal">
-    <div class="modal-dialog">
+<div class="modal fade bd-example-modal-lg" id="CreateModal">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header">
@@ -90,45 +98,62 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-floating mb-2">
-                    <select class="form-control select2" data-dependent="sub_category_id"
-                             name="main_category_id" id="main_category_id" required>
-                        <option selected disabled>Kérem válasszon főkategóriát</option>
-                        @foreach($mainCategories as $mainCategory)
-                            <option value="{{ $mainCategory->id }}">{{ $mainCategory->name }}</option>
-                        @endforeach
-                    </select>
-                    <label for="main_category_id">Főkategória</label>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-2">
+                            <select class="form-control select2" data-dependent="sub_category_id"
+                                     name="main_category_id" id="main_category_id" required>
+                                <option selected disabled>Kérem válasszon főkategóriát</option>
+                                @foreach($mainCategories as $mainCategory)
+                                    <option value="{{ $mainCategory->id }}">
+                                        {{ $mainCategory->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <label for="main_category_id">Főkategória</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-2">
+                            <select class="form-control select2" name="brand_id" id="brand_id" required>
+                                <option selected disabled>Kérem válasszon márkát</option>
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand->id }}">
+                                        {{ $brand->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <label for="brand_id">Márka</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-floating mb-2">
+                            <select class="form-control select2" name="sub_category_id"
+                                         id="sub_category_id" required>
+                                <option selected disabled>Kérem válasszon alkategóriát</option>
+                            </select>
+                            <label for="sub_category_id">Alkategória</label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-floating mb-2">
+                            <select class="form-control select2" name="amount_unit_id"
+                                        id="amount_unit_id" required>
+                                <option selected disabled>Kérem válasszon mennyiségi egységet</option>
+                                @foreach($units as $unit)
+                                    <option value="{{ $unit->id }}">
+                                        {{ $unit->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            <label for="amount_unit_id">Mennyiségi egység</label>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-floating mb-2">
-                    <select class="form-control select2" name="sub_category_id" id="sub_category_id" required>
-                        <option selected disabled>Kérem válasszon alkategóriát</option>
-                    </select>
-                    <label for="sub_category_id">Alkategória</label>
-                </div>
-                <div class="form-floating mb-2">
-                    <select class="form-control select2" name="brand_id" id="brand_id" required>
-                        <option selected disabled>Kérem válasszon márkát</option>
-                        @foreach($brands as $brand)
-                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                        @endforeach
-                    </select>
-                    <label for="brand_id">Márka</label>
-                </div>
-                <div class="form-floating mb-2">
-                    <select class="form-control select2" name="amount_unit_id"
-                                id="amount_unit_id" required>
-                        <option selected disabled>Kérem válasszon mennyiségi egységet</option>
-                        @foreach($units as $unit)
-                            <option value="{{ $unit->id }}">{{ $unit->name }}</option>
-                        @endforeach
-                    </select>
-                    <label for="amount_unit_id">Mennyiségi egység</label>
-                </div>
-                <div class="form-floating mb-2">
-                    <textarea class="form-control" name="description" id="description" 
-                        placeholder="Leírás ..." style="height: 180px"></textarea>
-                    <label for="description">Leírás...</label>
+                    <textarea name="editor1" id="description"></textarea>
                 </div>
             {{--Form end --}}
             </div>
@@ -228,79 +253,20 @@
 
 @section('script')
 
-    <script id="details-template" type="text/x-handlebars-template">
-        <table class="table">
-            <tr>
-                <td></td>
-                <td>
-                    <div class="row">
-                        <div class="col-3" id="product_image">
-                            <img src="img/product/@{{ image1 }}" id="product_img">
-                            <button class="btn btn-link btn-sm" id="deleteImage"
-                                    data-id="@{{ id }}"  data-image="@{{ image }}">
-                                <i class="fas fa-trash fa-lg"></i>
-                            </button>'
-                        </div>
-                        <div class="col-3" id="product_image">
-                            <img src="img/product/@{{ image2 }}" id="product_img">
-                            <button class="btn btn-link btn-sm" id="deleteImage"
-                                    data-id="@{{ id }}"  data-image="@{{ image }}">
-                                <i class="fas fa-trash fa-lg"></i>
-                            </button>'
-                        </div>
-                        <div class="col-3" id="product_image">
-                            <img src="img/product/@{{ image3 }}" id="product_img">
-                            <button class="btn btn-link btn-sm" id="deleteImage"
-                                    data-id="@{{ id }}"  data-image="@{{ image }}">
-                                <i class="fas fa-trash fa-lg"></i>
-                            </button>'
-                        </div>
-                        <div class="col-3" id="product_image">
-                            <img src="img/product/@{{ image4 }}" id="product_img">
-                            <button class="btn btn-link btn-sm" id="deleteImage"
-                                    data-id="@{{ id }}"  data-image="@{{ image }}">
-                                <i class="fas fa-trash fa-lg"></i>
-                            </button>'
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td width="25%">Név:</td>
-                <td>@{{ name }}</td>
-            </tr>
-            <tr>
-                <td>Nettó:</td>
-                <td>@{{ netto }}</td>
-            </tr>
-            <tr>
-                <td>Áfa:</td>
-                <td>@{{ vat_sum }}</td>
-            </tr>
-            <tr>
-                <td>Bruttó:</td>
-                <td>@{{ brutto }}</td>
-            </tr>
-            <tr>
-                <td>Márka:</td>
-                <td>@{{ brand_id }}</td>
-            </tr>
-            <tr>
-                <td>Kategória:</td>
-                <td>@{{ main_category_id }} / @{{ sub_category_id }}</td>
-            </tr>
-            <tr>
-                <td>Mennyiség:</td>
-                <td>@{{ qty }}</td>
-            </tr>
-            <tr>
-                <td>Leírás:</td>
-                <td>@{{ description }}</td>
-            </tr>
-        </table>
+    <script type="text/javascript"
+        src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js">
+    </script>
+
+    <script>
+        CKEDITOR.replace( 'editor1' );
+    </script>
+
+    <script id="details-template" type="text/x-handlebars-template"
+        src="{{ asset('js/admin/product/row.js') }}">
     </script>
 
     <script type="text/javascript"
         src="{{ asset('js/admin/product/product.js') }}">
     </script>
+
 @endsection

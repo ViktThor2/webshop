@@ -16,10 +16,10 @@ class RoleController extends Controller
 
     function __construct()
     {
-//         $this->middleware('permission:szerep-lista', ['only' => ['index']]);
-//         $this->middleware('permission:szerep-létrehozás', ['only' => ['create','store']]);
-//         $this->middleware('permission:szerep-szerkesztés', ['only' => ['edit','update']]);
-//         $this->middleware('permission:szerep-törlés', ['only' => ['destroy']]);
+         $this->middleware('permission:szerep-lista', ['only' => ['index']]);
+         $this->middleware('permission:szerep-létrehozás', ['only' => ['create','store']]);
+         $this->middleware('permission:szerep-szerkesztés', ['only' => ['edit','update']]);
+         $this->middleware('permission:szerep-törlés', ['only' => ['destroy']]);
     }
 
     public function index(Request $request)

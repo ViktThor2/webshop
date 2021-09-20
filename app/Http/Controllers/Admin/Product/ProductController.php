@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin\Product;
 
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Products\{
-    Product, ProductTable, MainCategory, SubCategory, Brand, AmountUnit, Vat, ProductImage
+    Product, ProductForm, MainCategory, SubCategory, Brand,
+    AmountUnit, Vat, ProductImage
 };
 
 class ProductController extends Controller
@@ -21,20 +23,30 @@ class ProductController extends Controller
 
     function __construct()
     {
-         $this->middleware('permission:termék-lista', ['only' => ['index']]);
-         $this->middleware('permission:termék-létrehozás', ['only' => ['create','store']]);
-         $this->middleware('permission:termék-szerkesztés', ['only' => ['edit','update']]);
-         $this->middleware('permission:termék-törlés', ['only' => ['destroy']]);
-         $this->middleware('permission:termék-kép-szerkesztés', ['only' => ['imageUpload', 'imageDelete']]);
+         $this->middleware('permission:termék-lista', 
+                                ['only' => ['index']]);
+         $this->middleware('permission:termék-létrehozás', 
+                                ['only' => ['create','store']]);
+         $this->middleware('permission:termék-szerkesztés', 
+                            ['only' => ['edit','update', 'changeActive']]);
+         $this->middleware('permission:termék-törlés', 
+                                ['only' => ['destroy']]);
+         $this->middleware('permission:termék-kép-szerkesztés', 
+                                ['only' => ['imageUpload', 'imageDelete']]);
     }
 
     public function index(Request $request)
     {      
-        if($request->ajax()):
-            $products = Product::all();
+        if( $request->ajax() ):
+
+            if($request->search):
+                $products = Product::Search($request)->get();
+            else:
+                $products = ProductForm::all();
+            endif;
 
             foreach($products as $product):
-                $product->getColumns();
+                $product->getTableColumns();
             endforeach;
                 
             return \DataTables::of($products)
@@ -86,7 +98,7 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = ProductTable::find($id);
+        $product = ProductForm::find($id);
         $html = $product->getEditForm();
 
         return response()->json(['html' => $html]);            
@@ -135,7 +147,7 @@ class ProductController extends Controller
     function fetch($id)
     {
         $data = SubCategory::Select($id)->get();
-        $output = '<option selected disabled>Kérem válasszon alkategóriát</option>';
+        $output = '<option value="" selected>Kérem válasszon alkategóriát</option>';
         
         if(count($data) == 0):
             $output .= '<option disabled>Nincs alkategória</option>';
